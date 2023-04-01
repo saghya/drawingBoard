@@ -1,0 +1,121 @@
+Removed Pin From Net: NetName=+5V Pin=C2-1
+Removed Pin From Net: NetName=GND Pin=C2-2
+Removed Pin From Net: NetName=GND Pin=C3-1
+Removed Pin From Net: NetName=+5V Pin=C3-2
+Removed Pin From Net: NetName=VR3_CW_2 Pin=JP1-1
+Removed Pin From Net: NetName=GND Pin=JP1-2
+Removed Pin From Net: NetName=VEE Pin=JP1-3
+Removed Pin From Net: NetName=BL_PWM Pin=R4-1
+Removed Pin From Net: NetName=NetQ1_1 Pin=R4-2
+Removed Pin From Net: NetName=LCD_DB4 Pin=R15-1
+Removed Pin From Net: NetName=NetIC2_15 Pin=R15-2
+Removed Pin From Net: NetName=NetIC2_14 Pin=R16-2
+Removed Pin From Net: NetName=LCD_DB2 Pin=R17-1
+Removed Pin From Net: NetName=NetIC2_13 Pin=R17-2
+Removed Pin From Net: NetName=LCD_DB1 Pin=R18-1
+Removed Pin From Net: NetName=NetIC2_12 Pin=R18-2
+Removed Pin From Net: NetName=LCD_DB0 Pin=R19-1
+Removed Pin From Net: NetName=NetIC2_11 Pin=R19-2
+Removed Pin From Net: NetName=LCD_DB3 Pin=U1-59
+Removed Pin From Net: NetName=LCD_DB4 Pin=U1-61
+Removed Pin From Net: NetName=ADC1_IN13 Pin=VR1-2
+Removed Pin From Net: NetName=ADC1_IN12 Pin=VR2-2
+Change Component Designator: OldDesignator=R2 NewDesignator=R4
+Change Component Designator: OldDesignator=R3 NewDesignator=R5
+Change Component Designator: OldDesignator=R4 NewDesignator=R15
+Change Component Designator: OldDesignator=R5 NewDesignator=R14
+Change Component Designator: OldDesignator=R6 NewDesignator=R16
+Change Component Designator: OldDesignator=R7 NewDesignator=R17
+Change Component Designator: OldDesignator=R8 NewDesignator=R18
+Change Component Designator: OldDesignator=R9 NewDesignator=R19
+Change Component Designator: OldDesignator=R10 NewDesignator=R20
+Change Component Designator: OldDesignator=R11 NewDesignator=R21
+Change Component Designator: OldDesignator=R12 NewDesignator=R6
+Change Component Designator: OldDesignator=R13 NewDesignator=R7
+Change Component Designator: OldDesignator=R14 NewDesignator=R8
+Change Component Designator: OldDesignator=R15 NewDesignator=R9
+Change Component Designator: OldDesignator=R16 NewDesignator=R10
+Change Component Designator: OldDesignator=R17 NewDesignator=R11
+Change Component Designator: OldDesignator=R18 NewDesignator=R12
+Change Component Designator: OldDesignator=R19 NewDesignator=R13
+Change Component Designator: OldDesignator=VR1 NewDesignator=VR2
+Change Component Designator: OldDesignator=VR2 NewDesignator=VR3
+Change Component Designator: OldDesignator=VR3 NewDesignator=VR1
+Change component parameters: Designator = "R6" ("R16"); Footprint = "FP_0805_RES"; UniqueID = "\RVQACORZ" ("\RVQACORZ")
+Change component parameters (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R7" ("R17"); Footprint = "FP_0805_RES"; UniqueID = "\RZPGYCAV" ("\RZPGYCAV")
+Change component parameters (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R9" ("R19"); Footprint = "FP_0805_RES"; UniqueID = "\YBUMFRRR" ("\YBUMFRRR")
+Change component parameters (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "100"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R10" ("R20"); Footprint = "FP_0805_RES"; UniqueID = "\ROOILRFN" ("\ROOILRFN")
+Change component parameters (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "100"; VariantName = "[No Variations]"
+Added Component: Designator=R2(FP_0805_RES)
+Add component (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "0"; VariantName = "[No Variations]"
+Added Component: Designator=R3(FP_0805_RES)
+Add component (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "0"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=C2-1
+Added Pin To Net: NetName=+5V Pin=C2-2
+Added Pin To Net: NetName=+5V Pin=C3-1
+Added Pin To Net: NetName=GND Pin=C3-2
+Added Pin To Net: NetName=VEE Pin=R2-1
+Added Pin To Net: NetName=VR3_CW_2 Pin=R2-2
+Added Pin To Net: NetName=GND Pin=R3-1
+Added Pin To Net: NetName=VR3_CW_2 Pin=R3-2
+Added Pin To Net: NetName=BL_PWM Pin=R9-1
+Added Pin To Net: NetName=NetQ1_1 Pin=R9-2
+Added Pin To Net: NetName=NetIC2_15 Pin=R10-2
+Added Pin To Net: NetName=LCD_DB4 Pin=R11-1
+Added Pin To Net: NetName=NetIC2_14 Pin=R11-2
+Added Pin To Net: NetName=LCD_DB2 Pin=R12-1
+Added Pin To Net: NetName=NetIC2_13 Pin=R12-2
+Added Pin To Net: NetName=LCD_DB1 Pin=R13-1
+Added Pin To Net: NetName=NetIC2_12 Pin=R13-2
+Added Pin To Net: NetName=LCD_DB0 Pin=R15-1
+Added Pin To Net: NetName=NetIC2_11 Pin=R15-2
+Added Pin To Net: NetName=LCD_DB4 Pin=U1-59
+Added Pin To Net: NetName=LCD_DB3 Pin=U1-61
+Added Pin To Net: NetName=ADC1_IN12 Pin=VR2-2
+Added Pin To Net: NetName=ADC1_IN13 Pin=VR3-2
+Change Net Name : Old Net Name=LCD_DB0 New Net Name=LCD_DB7
+Change Net Name : Old Net Name=LCD_DB1 New Net Name=LCD_DB6
+Change Net Name : Old Net Name=LCD_DB2 New Net Name=LCD_DB5
+Change Net Name : Old Net Name=LCD_DB5 New Net Name=LCD_DB2
+Change Net Name : Old Net Name=LCD_DB6 New Net Name=LCD_DB1
+Change Net Name : Old Net Name=LCD_DB7 New Net Name=LCD_DB0
+Change Net Name : Old Net Name=NetDS1_3 New Net Name=VO
+Change Net Name : Old Net Name=NetDS1_20 New Net Name=K
+Added Member To Class: ClassName=LCD Member=Component R14 10k
+Added Member To Class: ClassName=LCD Member=Component R15 1k
+Added Member To Class: ClassName=Btn&poti Member=Component R19 100
+Added Member To Class: ClassName=Btn&poti Member=Component R20 100
+Added Member To Class: ClassName=Btn&poti Member=Component R21 100

@@ -1,0 +1,6 @@
+Removed Pin From Net: NetName=BL_PWM Pin=R4-1
+Removed Pin From Net: NetName=BL_PWM Pin=U1-28
+Change Net Name : Old Net Name=BL_PWM New Net Name=GND
+Added Pin To Net: NetName=BL_PWM Pin=R4-1
+Added Pin To Net: NetName=BL_PWM Pin=U1-28
+Added Net: Name=BL_PWM

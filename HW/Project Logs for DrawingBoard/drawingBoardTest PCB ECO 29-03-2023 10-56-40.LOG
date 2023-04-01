@@ -1,0 +1,5 @@
+Removed Pin From Net: NetName=VEE Pin=R20-1
+Removed Pin From Net: NetName=GND Pin=R21-1
+Removed Member From Class: ClassName=LCD Member=R20
+Removed Member From Class: ClassName=LCD Member=R21
+Added Pin To Net: NetName=VEE Pin=VR3-3

@@ -1,0 +1,3 @@
+Record=TopLevelDocument|FileName=Inputs.SchDoc|SheetNumber=3
+Record=NoMainPathDocument|SourceDocument=Inputs.SchDoc|FileName=LCD.SchDoc|SheetNumber=2
+Record=NoMainPathDocument|SourceDocument=Inputs.SchDoc|FileName=Nucleo.SchDoc|SheetNumber=1

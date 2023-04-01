@@ -1,0 +1,29 @@
+Change Component Comment : Designator=Q1 Old Comment=NMOS New Comment=2N7002
+Change Component Description : Designator=U1 Old Description= New Description=Development kit
+Change Component Description : Designator=IC2 Old Description=Integrated Circuit New Description=Bidirectional bus transceiver
+Change Component Description : Designator=IC1 Old Description=Integrated Circuit New Description=Buffer/Line driver
+Change Component Description : Designator=Q1 Old Description=NXP - BSP030,115 - MOSFET, N CH, 30V, 10A, SOT223 New Description=NMOS
+Change component parameters: Designator = "IC1" ("IC1"); Footprint = "SOIC127P1032X265-20N"; UniqueID = "\WIYSQERM" ("\WIYSQERM")
+Change component parameters (AddParameter): Name = "Arrow Part Number"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Arrow Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Datasheet Link"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Name"; Value = "Nexperia"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mouser Part Number"; Value = "771-74HCT244D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mouser Price/Stock"; Value = "https://www.mouser.com/Search/Refine.aspx?Keyword=771-74HCT244D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Name"; Value = "74HCT244D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = "87-05-95"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = "Lomex"; VariantName = "[No Variations]"
+Change component parameters: Designator = "IC2" ("IC2"); Footprint = "SOIC127P1032X265-20N"; UniqueID = "\NOSZPHXH" ("\NOSZPHXH")
+Change component parameters (AddParameter): Name = "Arrow Part Number"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Arrow Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Datasheet Link"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Name"; Value = "Nexperia"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mouser Part Number"; Value = "N/A"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mouser Price/Stock"; Value = "https://www.mouser.co.uk/ProductDetail/Nexperia/74HCT245D?qs=vHuUswq2%252Bswq%2FDWSRnGMaw%3D%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Name"; Value = "74HCT245D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = "87-06-35"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = "Lomex"; VariantName = "[No Variations]"
+Change component parameters: Designator = "Q1" ("Q1"); Footprint = "FP_SOT23-3"; UniqueID = "\VFEETOBY" ("\VFEETOBY")
+Change component parameters (AddParameter): Name = "Name"; Value = "2N7002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = "86-00-97"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = "Lomex"; VariantName = "[No Variations]"

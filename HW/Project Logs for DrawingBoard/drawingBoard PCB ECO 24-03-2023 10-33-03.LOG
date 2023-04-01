@@ -1,0 +1,26 @@
+Removed Pin From Net: NetName=NetIC1_1 Pin=U1-49
+Removed Pin From Net: NetName=NetIC2_8 Pin=U1-51
+Removed Pin From Net: NetName=NetR7_1 Pin=U1-53
+Removed Pin From Net: NetName=NetR8_1 Pin=U1-55
+Removed Pin From Net: NetName=NetR9_1 Pin=U1-57
+Removed Pin From Net: NetName=NetR10_1 Pin=U1-59
+Removed Pin From Net: NetName=NetR11_1 Pin=U1-61
+Removed Pin From Net: NetName=NetR12_1 Pin=U1-63
+Removed Pin From Net: NetName=NetR13_1 Pin=U1-65
+Removed Pin From Net: NetName=NetR14_1 Pin=U1-67
+Added Pin To Net: NetName=NetR14_1 Pin=U1-53
+Added Pin To Net: NetName=NetR13_1 Pin=U1-55
+Added Pin To Net: NetName=NetR12_1 Pin=U1-57
+Added Pin To Net: NetName=NetR11_1 Pin=U1-59
+Added Pin To Net: NetName=NetR10_1 Pin=U1-61
+Added Pin To Net: NetName=NetR9_1 Pin=U1-63
+Added Pin To Net: NetName=NetR8_1 Pin=U1-65
+Added Pin To Net: NetName=NetR7_1 Pin=U1-67
+Added Member To Class: ClassName=hat Member=Component R1 10k
+Added Member To Class: ClassName=hat Member=Component R2 10k
+Added Member To Class: ClassName=hat Member=Component R3 10k
+Added Member To Class: ClassName=hat Member=Component R5 1k
+Added Member To Class: ClassName=hat Member=Component R7 1k
+Added Member To Class: ClassName=hat Member=Component R8 1k
+Added Member To Class: ClassName=hat Member=Component R9 1k
+Added Member To Class: ClassName=hat Member=Component R10 1k

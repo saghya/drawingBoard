@@ -1,0 +1,154 @@
+Removed Pin From Net: NetName=NetQ1_1 Pin=R4-1
+Removed Pin From Net: NetName=+5V Pin=R13-2
+Removed Pin From Net: NetName=+5V Pin=VR1-1
+Removed Pin From Net: NetName=+5V Pin=VR2-1
+Change Component Comment : Designator=R4 Old Comment=4k7 New Comment=10k
+Change Component Comment : Designator=U2 Old Comment=74HC244 New Comment=74HCT244D
+Change Component Comment : Designator=R1 Old Comment=100k New Comment=10k
+Change Component Comment : Designator=R13 Old Comment=100k New Comment=10k
+Change Component Designator: OldDesignator=R1 NewDesignator=R2
+Change Component Designator: OldDesignator=R2 NewDesignator=R3
+Change Component Designator: OldDesignator=R3 NewDesignator=R4
+Change Component Designator: OldDesignator=R4 NewDesignator=R6
+Change Component Designator: OldDesignator=R5 NewDesignator=R7
+Change Component Designator: OldDesignator=R6 NewDesignator=R8
+Change Component Designator: OldDesignator=R7 NewDesignator=R9
+Change Component Designator: OldDesignator=R8 NewDesignator=R10
+Change Component Designator: OldDesignator=R9 NewDesignator=R11
+Change Component Designator: OldDesignator=R10 NewDesignator=R12
+Change Component Designator: OldDesignator=R11 NewDesignator=R13
+Change Component Designator: OldDesignator=R12 NewDesignator=R14
+Change Component Designator: OldDesignator=R13 NewDesignator=R1
+Change Component Designator: OldDesignator=U2 NewDesignator=IC2
+Change component parameters: Designator = "R1" ("R2"); Footprint = "FP_0805_RES"; UniqueID = "\UTKXQAQU" ("\UTKXQAQU")
+Change component parameters (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R4" ("R6"); Footprint = "FP_0805_RES"; UniqueID = "\MCOHATJG" ("\MCOHATJG")
+Change component parameters (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R13" ("R1"); Footprint = "FP_0805_RES"; UniqueID = "\TQEUFOEB" ("\TQEUFOEB")
+Change component parameters (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=C3(FP_0805_CAP_085)
+Add component (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "100n"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=JP1(FP_CONN3_TUSKE_254MM)
+Add component (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R5(FP_0805_RES)
+Add component (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "1k"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=C3-1
+Added Pin To Net: NetName=+5V Pin=C3-2
+Added Pin To Net: NetName=GND Pin=IC2-15
+Added Pin To Net: NetName=GND Pin=IC2-17
+Added Pin To Net: NetName=GND Pin=JP1-2
+Added Pin To Net: NetName=NetQ1_1 Pin=R5-2
+Added Pin To Net: NetName=GND Pin=R6-1
+Added Pin To Net: NetName=NetQ1_1 Pin=R6-2
+Change Net Name : Old Net Name=NetDS1_12 New Net Name=CS1
+Change Net Name : Old Net Name=NetDS1_13 New Net Name=CS2
+Change Net Name : Old Net Name=NetDS1_14 New Net Name=RST
+Change Net Name : Old Net Name=NetDS1_15 New Net Name=R/W
+Change Net Name : Old Net Name=NetDS1_16 New Net Name=D/I
+Change Net Name : Old Net Name=NetDS1_17 New Net Name=E
+Change Net Name : Old Net Name=NetR5_1 New Net Name=NetR7_1
+Change Net Name : Old Net Name=NetR6_1 New Net Name=NetR8_1
+Change Net Name : Old Net Name=NetR7_1 New Net Name=NetR9_1
+Change Net Name : Old Net Name=NetR8_1 New Net Name=NetR10_1
+Change Net Name : Old Net Name=NetR9_1 New Net Name=NetR11_1
+Change Net Name : Old Net Name=NetR10_1 New Net Name=NetR12_1
+Change Net Name : Old Net Name=NetR11_1 New Net Name=NetR13_1
+Change Net Name : Old Net Name=NetR12_1 New Net Name=NetR14_1
+Change Net Name : Old Net Name=NetU1_40 New Net Name=NetIC2_13
+Change Net Name : Old Net Name=NetU1_41 New Net Name=NetIC2_11
+Change Net Name : Old Net Name=NetU1_42 New Net Name=NetIC2_4
+Change Net Name : Old Net Name=NetU1_43 New Net Name=NetIC2_2
+Change Net Name : Old Net Name=NetU1_51 New Net Name=NetIC2_8
+Added Pin To Net: NetName=+3V3 Pin=R1-2
+Added Pin To Net: NetName=+3V3 Pin=U1-16
+Added Pin To Net: NetName=+3V3 Pin=VR1-1
+Added Pin To Net: NetName=+3V3 Pin=VR2-1
+Added Net: Name=+3V3
+Added Pin To Net: NetName=DB0 Pin=DS1-4
+Added Pin To Net: NetName=DB0 Pin=IC1-2
+Added Net: Name=DB0
+Added Pin To Net: NetName=DB1 Pin=DS1-5
+Added Pin To Net: NetName=DB1 Pin=IC1-3
+Added Net: Name=DB1
+Added Pin To Net: NetName=DB2 Pin=DS1-6
+Added Pin To Net: NetName=DB2 Pin=IC1-4
+Added Net: Name=DB2
+Added Pin To Net: NetName=DB3 Pin=DS1-7
+Added Pin To Net: NetName=DB3 Pin=IC1-5
+Added Net: Name=DB3
+Added Pin To Net: NetName=DB4 Pin=DS1-8
+Added Pin To Net: NetName=DB4 Pin=IC1-6
+Added Net: Name=DB4
+Added Pin To Net: NetName=DB5 Pin=DS1-9
+Added Pin To Net: NetName=DB5 Pin=IC1-7
+Added Net: Name=DB5
+Added Pin To Net: NetName=DB6 Pin=DS1-10
+Added Pin To Net: NetName=DB6 Pin=IC1-8
+Added Net: Name=DB6
+Added Pin To Net: NetName=DB7 Pin=DS1-11
+Added Pin To Net: NetName=DB7 Pin=IC1-9
+Added Net: Name=DB7
+Added Pin To Net: NetName=NetIC1_11 Pin=IC1-11
+Added Pin To Net: NetName=NetIC1_11 Pin=R14-2
+Added Net: Name=NetIC1_11
+Added Pin To Net: NetName=NetIC1_12 Pin=IC1-12
+Added Pin To Net: NetName=NetIC1_12 Pin=R13-2
+Added Net: Name=NetIC1_12
+Added Pin To Net: NetName=NetIC1_13 Pin=IC1-13
+Added Pin To Net: NetName=NetIC1_13 Pin=R12-2
+Added Net: Name=NetIC1_13
+Added Pin To Net: NetName=NetIC1_14 Pin=IC1-14
+Added Pin To Net: NetName=NetIC1_14 Pin=R11-2
+Added Net: Name=NetIC1_14
+Added Pin To Net: NetName=NetIC1_15 Pin=IC1-15
+Added Pin To Net: NetName=NetIC1_15 Pin=R10-2
+Added Net: Name=NetIC1_15
+Added Pin To Net: NetName=NetIC1_16 Pin=IC1-16
+Added Pin To Net: NetName=NetIC1_16 Pin=R9-2
+Added Net: Name=NetIC1_16
+Added Pin To Net: NetName=NetIC1_17 Pin=IC1-17
+Added Pin To Net: NetName=NetIC1_17 Pin=R8-2
+Added Net: Name=NetIC1_17
+Added Pin To Net: NetName=NetIC1_18 Pin=IC1-18
+Added Pin To Net: NetName=NetIC1_18 Pin=R7-2
+Added Net: Name=NetIC1_18
+Added Pin To Net: NetName=NetR5_1 Pin=R5-1
+Added Pin To Net: NetName=NetR5_1 Pin=U1-39
+Added Net: Name=NetR5_1
+Added Pin To Net: NetName=VEE Pin=DS1-18
+Added Pin To Net: NetName=VEE Pin=JP1-3
+Added Net: Name=VEE
+Added Pin To Net: NetName=VR3_CW_2 Pin=JP1-1
+Added Pin To Net: NetName=VR3_CW_2 Pin=VR3-3
+Added Net: Name=VR3_CW_2
+Added Member To Class: ClassName=hat Member=Component C3 100n
+Added Member To Class: ClassName=hat Member=Component DS1 RG12864B-BIW-V
+Added Member To Class: ClassName=hat Member=Component JP1 JUMPER
+Added Member To Class: ClassName=hat Member=Component R14 1k

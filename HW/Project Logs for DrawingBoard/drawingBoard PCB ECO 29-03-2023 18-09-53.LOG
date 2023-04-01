@@ -1,0 +1,9 @@
+Change Component Footprint: Designator=IC1 Old Footprint=TSOP65P640X110-20N New Footprint=SOIC127P1032X265-20N
+Change component parameters: Designator = "IC1" ("IC1"); Footprint = "TSOP65P640X110-20N"; UniqueID = "\COMZQUTW" ("\COMZQUTW")
+Change component parameters (AddParameter): Name = "Arrow Part Number"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Arrow Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Datasheet Link"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Name"; Value = "Nexperia"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "74HCT244D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mouser Part Number"; Value = "771-74HCT244D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mouser Price/Stock"; Value = "https://www.mouser.com/Search/Refine.aspx?Keyword=771-74HCT244D"; VariantName = "[No Variations]"

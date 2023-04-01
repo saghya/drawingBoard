@@ -1,0 +1,21 @@
+----------------------------------------------------------------------------------------------------------------------------------
+NCDrill File Report For: drawingBoard.PcbDoc   31/03/2023  11:11:03
+----------------------------------------------------------------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : drawingBoard.TXT
+
+Tool       Hole Size               Hole Tolerance               Hole Type       Hole Count   Plated         Tool Travel
+----------------------------------------------------------------------------------------------------------------------------------
+T1      28mil (0.7mm)                                             Round             3         PTH        0.20inch (5.00mm)
+T2      28mil (0.711mm)                                           Round             16        PTH        10.48inch (266.08mm)
+T3      39mil (1mm)                                               Round             20        PTH        2.40inch (60.96mm)
+T4      43mil (1.1mm)                                             Round             80        PTH        12.30inch (312.42mm)
+T5      47mil (1.2mm)                                             Round             6         PTH        2.20inch (55.80mm)
+T6      98mil (2.5mm)                                             Round             4         PTH        7.47inch (189.70mm)
+T7      117mil (2.973mm)                                          Round             4         PTH        2.35inch (59.60mm)
+T8      138mil (3.5mm)                                            Round             4         PTH        10.40inch (264.17mm)
+----------------------------------------------------------------------------------------------------------------------------------
+Totals                                                                              137
+
+Total Processing Time (hh:mm:ss) : 00:00:00

@@ -1,0 +1,19 @@
+Removed Pin From Net: NetName=BTN2 Pin=U1-17
+Removed Pin From Net: NetName=BTN1 Pin=U1-23
+Added Pin To Net: NetName=BTN2 Pin=U1-1
+Added Pin To Net: NetName=BTN1 Pin=U1-2
+Added Pin To Net: NetName=POT1 Pin=U1-44
+Added Pin To Net: NetName=POT1 Pin=VR1-2
+Added Net: Name=POT1
+Added Pin To Net: NetName=POT2 Pin=U1-35
+Added Pin To Net: NetName=POT2 Pin=VR2-2
+Added Net: Name=POT2
+Added Member To Class: ClassName=LCD Member=Component IC1 74HCT244D
+Added Member To Class: ClassName=LCD Member=Component R2 10k
+Added Member To Class: ClassName=LCD Member=Component R12 1k
+Added Member To Class: ClassName=LCD Member=Component R13 1k
+Added Member To Class: ClassName=LCD Member=Component R14 1k
+Added Member To Class: ClassName=LCD Member=Component R15 1k
+Added Member To Class: ClassName=LCD Member=Component R16 1k
+Added Member To Class: ClassName=LCD Member=Component R17 1k
+Added Member To Class: ClassName=LCD Member=Component R18 1k

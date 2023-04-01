@@ -1,0 +1,35 @@
+Removed Pin From Net: NetName=VR3_CW_2 Pin=JP1-1
+Removed Pin From Net: NetName=GND Pin=JP1-2
+Removed Pin From Net: NetName=VEE Pin=JP1-3
+Change Component Designator: OldDesignator=VR1 NewDesignator=VR2
+Change Component Designator: OldDesignator=VR2 NewDesignator=VR1
+Added Component: Designator=R20(FP_0805_RES)
+Add component (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "0"; VariantName = "[No Variations]"
+Added Component: Designator=R21(FP_0805_RES)
+Add component (AddParameter): Name = "Name"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Power"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reference"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tolerance"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "0"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=VEE Pin=R20-1
+Added Pin To Net: NetName=VR3_CW_2 Pin=R20-2
+Added Pin To Net: NetName=GND Pin=R21-1
+Added Pin To Net: NetName=VR3_CW_2 Pin=R21-2
+Change Net Name : Old Net Name=LCD_DB0 New Net Name=LCD_DB7
+Change Net Name : Old Net Name=LCD_DB1 New Net Name=LCD_DB6
+Change Net Name : Old Net Name=LCD_DB2 New Net Name=LCD_DB5
+Change Net Name : Old Net Name=LCD_DB3 New Net Name=LCD_DB4
+Change Net Name : Old Net Name=LCD_DB4 New Net Name=LCD_DB3
+Change Net Name : Old Net Name=LCD_DB5 New Net Name=LCD_DB2
+Change Net Name : Old Net Name=LCD_DB6 New Net Name=LCD_DB1
+Change Net Name : Old Net Name=LCD_DB7 New Net Name=LCD_DB0
+Change Net Name : Old Net Name=NetDS1_3 New Net Name=VO
+Change Net Name : Old Net Name=NetDS1_20 New Net Name=K
+Added Member To Class: ClassName=LCD Member=Component R20 0
+Added Member To Class: ClassName=LCD Member=Component R21 0

@@ -1,4 +1,0 @@
-Removed Pin From Net: NetName=LCD_CS2 Pin=U1-40
-Removed Pin From Net: NetName=LCD_E Pin=U1-41
-Added Pin To Net: NetName=LCD_E Pin=U1-40
-Added Pin To Net: NetName=LCD_CS2 Pin=U1-41

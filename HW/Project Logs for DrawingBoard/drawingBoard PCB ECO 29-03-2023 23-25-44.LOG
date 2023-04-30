@@ -1,8 +1,0 @@
-Change component parameters: Designator = "IC2" ("IC2"); Footprint = "SOIC127P1032X265-20N"; UniqueID = "\LNQADEDR" ("\LNQADEDR")
-Change component parameters (AddParameter): Name = "Arrow Part Number"; Value = ""; VariantName = "[No Variations]"
-Change component parameters (AddParameter): Name = "Arrow Price/Stock"; Value = ""; VariantName = "[No Variations]"
-Change component parameters (AddParameter): Name = "Datasheet Link"; Value = ""; VariantName = "[No Variations]"
-Change component parameters (AddParameter): Name = "Manufacturer_Name"; Value = "Nexperia"; VariantName = "[No Variations]"
-Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "74HCT245D"; VariantName = "[No Variations]"
-Change component parameters (AddParameter): Name = "Mouser Part Number"; Value = "N/A"; VariantName = "[No Variations]"
-Change component parameters (AddParameter): Name = "Mouser Price/Stock"; Value = "https://www.mouser.co.uk/ProductDetail/Nexperia/74HCT245D?qs=vHuUswq2%252Bswq%2FDWSRnGMaw%3D%3D"; VariantName = "[No Variations]"

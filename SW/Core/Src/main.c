@@ -106,14 +106,14 @@ int main(void) {
 
     // LCD_Test();
     HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
-    TIM8->CCR4 = 65535; // LCD brightness
+    TIM8->CCR4 = 1000; // LCD brightness
     LCD_Init();
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     int x0, x1, y0, y1;
-    LCD_WriteString("Finished\nerasing 1 pages of 16384 (0x4000) bytes", 0, 0);
+    LCD_DrawString("Finished\nerasing 1 pages of 16384 (0x4000) bytes", 0, 0);
     while (1) {
         HAL_ADC_Start(&hadc1);
         HAL_ADC_PollForConversion(&hadc1, 0);

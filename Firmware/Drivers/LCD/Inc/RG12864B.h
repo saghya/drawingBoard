@@ -14,5 +14,7 @@ void LCD_ResetPixel(uint8_t x, uint8_t y);
 void LCD_TogglePixel(uint8_t x, uint8_t y);
 void LCD_DrawChar(char c, uint8_t x, uint8_t y);
 void LCD_DrawString(char *s, uint8_t x, uint8_t y);
+void LCD_DrawCharInverse(char c, uint8_t x, uint8_t y);
+void LCD_DrawStringInverse(char *s, uint8_t x, uint8_t y);
 
 #endif // __RG12864B_H

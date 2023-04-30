@@ -56,8 +56,8 @@ void LCD_Clear()
 {
     for (int i = 0; i < 8; i++) {
         LCD_Instruction(PAGE_BASE | i);
+        LCD_Instruction(X_BASE);
         for (int j = 0; j < 64; j++) {
-            LCD_Instruction(X_BASE | j);
             LCD_Data(0);
         }
     }
@@ -134,6 +134,32 @@ void LCD_DrawString(char *s, uint8_t x, uint8_t y)
             y += 8;
         }
         LCD_DrawChar(*s, x, y);
+        x += 6;
+    }
+}
+
+void LCD_DrawCharInverse(char c, uint8_t x, uint8_t y)
+{
+    for (int i = 0; i < 5; i++, x++) {
+        LCD_SetPos(x, y);
+        LCD_Data(~(font5x8[c - 0x20][i]));
+    }
+    LCD_Data(0xff);
+}
+
+void LCD_DrawStringInverse(char *s, uint8_t x, uint8_t y)
+{
+    for (; *s != '\0'; s++) {
+        if (*s == '\n') {
+            x = 0;
+            y += 8;
+            continue;
+        }
+        if (x + 5 > 127) {
+            x = 0;
+            y += 8;
+        }
+        LCD_DrawCharInverse(*s, x, y);
         x += 6;
     }
 }

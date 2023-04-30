@@ -1,15 +1,18 @@
 #MicroXplorer Configuration settings - do not modify
-ADC1.Channel-6\#ChannelRegularConversion=ADC_CHANNEL_12
-ADC1.IPParameters=Rank-6\#ChannelRegularConversion,master,Channel-6\#ChannelRegularConversion,SamplingTime-6\#ChannelRegularConversion,NbrOfConversionFlag
+ADC1.Channel-7\#ChannelRegularConversion=ADC_CHANNEL_12
+ADC1.ContinuousConvMode=DISABLE
+ADC1.DMAContinuousRequests=DISABLE
+ADC1.IPParameters=Rank-7\#ChannelRegularConversion,master,Channel-7\#ChannelRegularConversion,SamplingTime-7\#ChannelRegularConversion,NbrOfConversionFlag,NbrOfConversion,ContinuousConvMode,DMAContinuousRequests
+ADC1.NbrOfConversion=1
 ADC1.NbrOfConversionFlag=1
-ADC1.Rank-6\#ChannelRegularConversion=1
-ADC1.SamplingTime-6\#ChannelRegularConversion=ADC_SAMPLETIME_3CYCLES
+ADC1.Rank-7\#ChannelRegularConversion=1
+ADC1.SamplingTime-7\#ChannelRegularConversion=ADC_SAMPLETIME_3CYCLES
 ADC1.master=1
-ADC2.Channel-2\#ChannelRegularConversion=ADC_CHANNEL_15
-ADC2.IPParameters=Rank-2\#ChannelRegularConversion,Channel-2\#ChannelRegularConversion,SamplingTime-2\#ChannelRegularConversion,NbrOfConversionFlag
+ADC2.Channel-1\#ChannelRegularConversion=ADC_CHANNEL_15
+ADC2.IPParameters=Rank-1\#ChannelRegularConversion,Channel-1\#ChannelRegularConversion,SamplingTime-1\#ChannelRegularConversion,NbrOfConversionFlag
 ADC2.NbrOfConversionFlag=1
-ADC2.Rank-2\#ChannelRegularConversion=1
-ADC2.SamplingTime-2\#ChannelRegularConversion=ADC_SAMPLETIME_3CYCLES
+ADC2.Rank-1\#ChannelRegularConversion=1
+ADC2.SamplingTime-1\#ChannelRegularConversion=ADC_SAMPLETIME_3CYCLES
 CAD.formats=
 CAD.pinconfig=
 CAD.provider=

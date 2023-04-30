@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "RG12864B.h"
+#include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_adc.h"
 /* USER CODE END Includes */
 
@@ -56,9 +57,9 @@ UART_HandleTypeDef huart2;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
+static void MX_ADC2_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM8_Init(void);
-static void MX_ADC2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -98,21 +99,21 @@ int main(void) {
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
     MX_ADC1_Init();
+    MX_ADC2_Init();
     MX_USART2_UART_Init();
     MX_TIM8_Init();
-    MX_ADC2_Init();
     /* USER CODE BEGIN 2 */
 
     // LCD_Test();
     HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
-    TIM8->CCR4 = 65535;
+    TIM8->CCR4 = 65535; // LCD brightness
     LCD_Init();
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
-    int a, b, c;
-    int x = 22, y = 0;
+    int x0, x1, y0, y1;
+    LCD_WriteString("Finished\nerasing 1 pages of 16384 (0x4000) bytes", 0, 0);
     while (1) {
         HAL_ADC_Start(&hadc1);
         HAL_ADC_PollForConversion(&hadc1, 0);
@@ -122,11 +123,18 @@ int main(void) {
         HAL_ADC_PollForConversion(&hadc2, 0);
         HAL_ADC_Stop(&hadc2);
 
-        x = ~(HAL_ADC_GetValue(&hadc1) >> 5) & 0x7f;
-        y = HAL_ADC_GetValue(&hadc2) >> 6;
+        x0 = ~(HAL_ADC_GetValue(&hadc1) >> 5) & 0x7f;
+        y0 = HAL_ADC_GetValue(&hadc2) >> 6;
 
         // LCD_Clear();
-        LCD_SetPixel(x, y);
+        //if (x0 == x1 && y0 == y1) {
+        //    HAL_Delay(50);
+        //    LCD_TogglePixel(x0, y0);
+        //} else {
+            LCD_SetPixel(x0, y0);
+        //}
+        //x1 = x0;
+        //y1 = y0;
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */

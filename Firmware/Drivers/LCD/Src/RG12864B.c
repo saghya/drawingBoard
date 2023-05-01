@@ -1,4 +1,5 @@
 #include "RG12864B.h"
+#include "cmsis_gcc.h"
 #include "font5x8.h"
 #include "main.h"
 
@@ -25,31 +26,30 @@ uint16_t LCD_DB_Pin[8] = {LCD_DB0_Pin, LCD_DB1_Pin, LCD_DB2_Pin, LCD_DB3_Pin,
 
 uint8_t bitmap[8][128] = {0};
 
-void LCD_Instruction(uint8_t instruction)
+void LCD_SendByte(uint8_t data)
 {
-    HAL_GPIO_WritePin(LCD_D_I_GPIO_Port, LCD_D_I_Pin, GPIO_PIN_RESET);
-
-    for (uint8_t i = 0; i < 8; i++) {
-        HAL_GPIO_WritePin(LCD_DB_GPIO_Port[i], LCD_DB_Pin[i],
-                          instruction & 1 << i);
-    }
-
-    HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_SET);
-    HAL_Delay(DELAY);
-    HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_RESET);
-}
-
-void LCD_Data(uint8_t data)
-{
-    HAL_GPIO_WritePin(LCD_D_I_GPIO_Port, LCD_D_I_Pin, GPIO_PIN_SET);
-
     for (uint8_t i = 0; i < 8; i++) {
         HAL_GPIO_WritePin(LCD_DB_GPIO_Port[i], LCD_DB_Pin[i], data & 1 << i);
     }
 
     HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_SET);
-    HAL_Delay(DELAY);
+    //HAL_Delay(DELAY);
+    for (int i = 0; i < 1000; i++) { // dirty delay
+        __ASM("nop");
+    }
     HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_RESET);
+}
+
+void LCD_Instruction(uint8_t instruction)
+{
+    HAL_GPIO_WritePin(LCD_D_I_GPIO_Port, LCD_D_I_Pin, GPIO_PIN_RESET);
+    LCD_SendByte(instruction);
+}
+
+void LCD_Data(uint8_t data)
+{
+    HAL_GPIO_WritePin(LCD_D_I_GPIO_Port, LCD_D_I_Pin, GPIO_PIN_SET);
+    LCD_SendByte(data);
 }
 
 void LCD_Clear()

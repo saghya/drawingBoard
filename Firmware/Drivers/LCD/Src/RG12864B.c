@@ -2,20 +2,7 @@
 #include "cmsis_gcc.h"
 #include "font5x8.h"
 #include "main.h"
-
-#define WIDTH  128
-#define HEIGHT 64
-
-#define LCD_ON    0b00111111
-#define LCD_OFF   0b00111110
-#define PAGE_BASE 0b10111000
-#define X_BASE    0b01000000
-#define Z_BASE    0b11000000
-
-#define LCD_READ  GPIO_PIN_SET
-#define LCD_WRITE GPIO_PIN_RESET
-
-#define DELAY 1
+#include <string.h>
 
 GPIO_TypeDef *LCD_DB_GPIO_Port[8] = {
     LCD_DB0_GPIO_Port, LCD_DB1_GPIO_Port, LCD_DB2_GPIO_Port, LCD_DB3_GPIO_Port,
@@ -33,7 +20,6 @@ void LCD_SendByte(uint8_t data)
     }
 
     HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_SET);
-    //HAL_Delay(DELAY);
     for (int i = 0; i < 1000; i++) { // dirty delay
         __ASM("nop");
     }
@@ -54,6 +40,9 @@ void LCD_Data(uint8_t data)
 
 void LCD_Clear()
 {
+    HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_RESET);
+    memset(bitmap, 0, LCD_WIDTH * LCD_HEIGHT / 8);
     for (int i = 0; i < 8; i++) {
         LCD_Instruction(PAGE_BASE | i);
         LCD_Instruction(X_BASE);
@@ -65,6 +54,8 @@ void LCD_Clear()
 
 void LCD_Init()
 {
+    HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
+    LCD_SetBrightness(0xffff);
     HAL_GPIO_WritePin(xLCD_EN_GPIO_Port, xLCD_EN_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(LCD_RST_GPIO_Port, LCD_RST_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_RESET);
@@ -75,15 +66,17 @@ void LCD_Init()
     LCD_Clear();
 }
 
+inline void LCD_SetBrightness(uint16_t b) { LCD_BRIGHTNESS = b; }
+
 void LCD_SetPos(uint8_t x, uint8_t y)
 {
-    if (x < WIDTH / 2) {
+    if (x < LCD_WIDTH / 2) {
         HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_SET);
     } else {
         HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_SET);
         HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_RESET);
-        x -= WIDTH / 2;
+        x -= LCD_WIDTH / 2;
     }
 
     LCD_Instruction(PAGE_BASE | y / 8);
@@ -115,8 +108,11 @@ void LCD_TogglePixel(uint8_t x, uint8_t y)
 
 void LCD_DrawChar(char c, uint8_t x, uint8_t y)
 {
+    if (x > LCD_WIDTH - 1 - FONT_WIDTH) {
+        x -= 5;
+    }
     for (int i = 0; i < 5; i++, x++) {
-        LCD_SetPos(x, y);
+        LCD_SetPos(x, y * 8);
         LCD_Data(font5x8[c - 0x20][i]);
     }
 }
@@ -126,12 +122,12 @@ void LCD_DrawString(char *s, uint8_t x, uint8_t y)
     for (; *s != '\0'; s++) {
         if (*s == '\n') {
             x = 0;
-            y += 8;
+            y += 1;
             continue;
         }
         if (x + 5 > 127) {
             x = 0;
-            y += 8;
+            y += 1;
         }
         LCD_DrawChar(*s, x, y);
         x += 6;
@@ -140,8 +136,15 @@ void LCD_DrawString(char *s, uint8_t x, uint8_t y)
 
 void LCD_DrawCharInverse(char c, uint8_t x, uint8_t y)
 {
+    if (x > LCD_WIDTH - 1 - FONT_WIDTH) {
+        x -= 5;
+    }
+    if (x > 0) {
+        LCD_SetPos(x - 1, y * 8);
+        LCD_Data(0xff);
+    }
     for (int i = 0; i < 5; i++, x++) {
-        LCD_SetPos(x, y);
+        LCD_SetPos(x, y * 8);
         LCD_Data(~(font5x8[c - 0x20][i]));
     }
     LCD_Data(0xff);
@@ -152,12 +155,12 @@ void LCD_DrawStringInverse(char *s, uint8_t x, uint8_t y)
     for (; *s != '\0'; s++) {
         if (*s == '\n') {
             x = 0;
-            y += 8;
+            y += 1;
             continue;
         }
         if (x + 5 > 127) {
             x = 0;
-            y += 8;
+            y += 1;
         }
         LCD_DrawCharInverse(*s, x, y);
         x += 6;

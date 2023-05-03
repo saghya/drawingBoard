@@ -25,13 +25,9 @@ void LCD_SetPos(uint8_t x, uint8_t y);
 void LCD_SetPixel(uint8_t x, uint8_t y);
 void LCD_ResetPixel(uint8_t x, uint8_t y);
 void LCD_TogglePixel(uint8_t x, uint8_t y);
-// x E [0; 127], y E [0; 7]
-void LCD_DrawChar(char c, uint8_t x, uint8_t y);
-// x E [0; 127], y E [0; 7]
-void LCD_DrawString(char *s, uint8_t x, uint8_t y);
-// x E [0; 127], y E [0; 7]
-void LCD_DrawCharInverse(char c, uint8_t x, uint8_t y);
-// x E [0; 127], y E [0; 7]
+void LCD_DrawChar(char c, uint8_t x, uint8_t p);
+void LCD_DrawString(char *s, uint8_t x, uint8_t p);
+void LCD_DrawCharInverse(char c, uint8_t x, uint8_t p);
 void LCD_DrawStringInverse(char *s, uint8_t x, uint8_t y);
 
 #endif // __RG12864B_H

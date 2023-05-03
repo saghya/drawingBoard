@@ -85,7 +85,6 @@ void menuLoop()
     // Set brightness
     LCD_DrawString("- Change brightness", 1, 2);
     LCD_DrawCharInverse('x', 127, 7);
-    
 }
 
 void drawingLoop()

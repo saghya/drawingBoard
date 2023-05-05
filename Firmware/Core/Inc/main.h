@@ -93,10 +93,10 @@ void Error_Handler(void);
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
-#define BTN3_Pin GPIO_PIN_10
-#define BTN3_GPIO_Port GPIOC
-#define BTN1_Pin GPIO_PIN_11
+#define BTN1_Pin GPIO_PIN_10
 #define BTN1_GPIO_Port GPIOC
+#define BTN3_Pin GPIO_PIN_11
+#define BTN3_GPIO_Port GPIOC
 #define BTN2_Pin GPIO_PIN_12
 #define BTN2_GPIO_Port GPIOC
 #define SWO_Pin GPIO_PIN_3

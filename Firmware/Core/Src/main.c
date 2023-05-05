@@ -59,6 +59,7 @@ UART_HandleTypeDef huart2;
 uint32_t x_values[ADC_PRECISION] = {0};
 uint32_t y_values[ADC_PRECISION] = {0};
 uint32_t x, y;
+uint8_t  menu = 1, drawing = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -78,32 +79,36 @@ static void MX_ADC2_Init(void);
 
 void menuLoop()
 {
-    // Draw
-    LCD_DrawString("- Start drawing", 1, 0);
-    // Load drawing
-    LCD_DrawStringInverse("- Load drawing", 1, 1);
-    // Set brightness
-    LCD_DrawString("- Change brightness", 1, 2);
-    LCD_DrawCharInverse('x', 127, 7);
+    while (menu) {
+        // Draw
+        LCD_DrawString("- Start drawing", 1, 0);
+        // Load drawing
+        LCD_DrawStringInverse("- Load drawing", 1, 1);
+        // Set brightness
+        LCD_DrawString("- Change brightness", 1, 2);
+        LCD_DrawCharInverse('x', 127, 7);
+    }
 }
 
 void drawingLoop()
 {
-    HAL_ADC_Start_DMA(&hadc1, x_values, ADC_PRECISION);
-    HAL_ADC_Start_DMA(&hadc2, y_values, ADC_PRECISION);
+    while (drawing) {
+        HAL_ADC_Start_DMA(&hadc1, x_values, ADC_PRECISION);
+        HAL_ADC_Start_DMA(&hadc2, y_values, ADC_PRECISION);
 
-    x = y = 0;
-    for (int i = 0; i < ADC_PRECISION; i++) {
-        x += x_values[i];
-        y += y_values[i];
+        x = y = 0;
+        for (int i = 0; i < ADC_PRECISION; i++) {
+            x += x_values[i];
+            y += y_values[i];
+        }
+        x /= ADC_PRECISION / 2;
+        y /= ADC_PRECISION / 2;
+
+        x = ~(x >> 6) & 0x7f;
+        y = y >> 7;
+
+        LCD_SetPixel(x, y);
     }
-    x /= ADC_PRECISION / 2;
-    y /= ADC_PRECISION / 2;
-
-    x = ~(x >> 6) & 0x7f;
-    y = y >> 7;
-
-    LCD_SetPixel(x, y);
 }
 
 /* USER CODE END 0 */
@@ -149,17 +154,9 @@ int main(void)
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
-    //LCD_DrawStringInverse("Finished\nerasing 1 pages of 16384 (0x4000) bytes", 1, 0);
-
-    //drawingLoop();
-    //LCD_Clear();
-    menuLoop();
     while (1) {
-        if (!HAL_GPIO_ReadPin(BTN2_GPIO_Port, BTN2_Pin)) {
-            LCD_Clear();
-        }
-        //drawingLoop();
-
+        menuLoop();
+        drawingLoop();
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
@@ -487,8 +484,8 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    /*Configure GPIO pins : BTN3_Pin BTN1_Pin BTN2_Pin */
-    GPIO_InitStruct.Pin  = BTN3_Pin | BTN1_Pin | BTN2_Pin;
+    /*Configure GPIO pins : BTN1_Pin BTN3_Pin BTN2_Pin */
+    GPIO_InitStruct.Pin  = BTN1_Pin | BTN3_Pin | BTN2_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);

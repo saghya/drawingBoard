@@ -1,7 +1,5 @@
 #include "RG12864B.h"
-#include "cmsis_gcc.h"
 #include "font5x8.h"
-#include "main.h"
 #include <string.h>
 
 GPIO_TypeDef *LCD_DB_GPIO_Port[8] = {
@@ -66,7 +64,7 @@ void LCD_Init()
     LCD_Clear();
 }
 
-inline void LCD_SetBrightness(uint16_t b) { LCD_BRIGHTNESS = b; }
+void LCD_SetBrightness(uint16_t b) { LCD_BRIGHTNESS = b; }
 
 void LCD_SetPos(uint8_t x, uint8_t p)
 {
@@ -111,10 +109,15 @@ void LCD_DrawChar(char c, uint8_t x, uint8_t p)
     if (x > LCD_WIDTH - 1 - FONT_WIDTH) {
         x -= FONT_WIDTH;
     }
+    if (x > 0) {
+        LCD_SetPos(x - 1, p);
+        LCD_Data(0x00);
+    }
     for (int i = 0; i < FONT_WIDTH; i++, x++) {
         LCD_SetPos(x, p);
         LCD_Data(font5x8[c - 0x20][i]);
     }
+    LCD_Data(0x00);
 }
 
 void LCD_DrawString(char *s, uint8_t x, uint8_t p)

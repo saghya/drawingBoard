@@ -32,7 +32,12 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+typedef enum {
+    NEW_DRAWING,
+    LOAD_DRAWING,
+    SAVE_DRAWING,
+    CHANGE_BRIGHTNESS
+} MenuItem;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -56,10 +61,11 @@ TIM_HandleTypeDef htim8;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint32_t x_values[ADC_PRECISION] = {0};
-uint32_t y_values[ADC_PRECISION] = {0};
-uint32_t x, y;
-uint8_t  menu = 1, drawing = 0;
+uint32_t          x_values[ADC_PRECISION] = {0};
+uint32_t          y_values[ADC_PRECISION] = {0};
+uint32_t          x, y;
+volatile uint8_t  menu = 1, drawing = 0, change_brightness = 0, clear = 0;
+volatile MenuItem item = NEW_DRAWING;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -79,20 +85,55 @@ static void MX_ADC2_Init(void);
 
 void menuLoop()
 {
+    LCD_Clear();
+    LCD_DrawString("Main menu", 40, 0);
+    LCD_DrawString("- Start new drawing", 1, 2);
+    LCD_DrawString("- Load drawing", 1, 3);
+    LCD_DrawString("- Save drawing", 1, 4);
+    LCD_DrawString("- Change brightness", 1, 5);
+
+    LCD_DrawStringInverse("UP", 28, 7);
+    LCD_DrawStringInverse("OK", 58, 7);
+    LCD_DrawStringInverse("DOWN", 85, 7);
     while (menu) {
-        // Draw
-        LCD_DrawString("- Start drawing", 1, 0);
-        // Load drawing
-        LCD_DrawStringInverse("- Load drawing", 1, 1);
-        // Set brightness
-        LCD_DrawString("- Change brightness", 1, 2);
-        LCD_DrawCharInverse('x', 127, 7);
+        //LCD_Clear();
+        switch (item) {
+            case NEW_DRAWING:
+                LCD_DrawStringInverse("- Start new drawing", 1, 2);
+                LCD_DrawString("- Load drawing", 1, 3);
+                LCD_DrawString("- Save drawing", 1, 4);
+                LCD_DrawString("- Change brightness", 1, 5);
+                break;
+            case LOAD_DRAWING:
+                LCD_DrawString("- Start new drawing", 1, 2);
+                LCD_DrawStringInverse("- Load drawing", 1, 3);
+                LCD_DrawString("- Save drawing", 1, 4);
+                LCD_DrawString("- Change brightness", 1, 5);
+                break;
+            case SAVE_DRAWING:
+                LCD_DrawString("- Start new drawing", 1, 2);
+                LCD_DrawString("- Load drawing", 1, 3);
+                LCD_DrawStringInverse("- Save drawing", 1, 4);
+                LCD_DrawString("- Change brightness", 1, 5);
+                break;
+            case CHANGE_BRIGHTNESS:
+                LCD_DrawString("- Start new drawing", 1, 2);
+                LCD_DrawString("- Load drawing", 1, 3);
+                LCD_DrawString("- Save drawing", 1, 4);
+                LCD_DrawStringInverse("- Change brightness", 1, 5);
+                break;
+        }
     }
 }
 
 void drawingLoop()
 {
+    LCD_Clear();
     while (drawing) {
+        if (clear) {
+            clear = 0;
+            LCD_Clear();
+        }
         HAL_ADC_Start_DMA(&hadc1, x_values, ADC_PRECISION);
         HAL_ADC_Start_DMA(&hadc2, y_values, ADC_PRECISION);
 
@@ -108,6 +149,30 @@ void drawingLoop()
         y = y >> 7;
 
         LCD_SetPixel(x, y);
+    }
+}
+
+void brightnessLoop()
+{
+    LCD_Clear();
+
+    LCD_DrawString("Change brightness", 14, 0);
+
+    LCD_DrawStringInverse("+", 35, 7);
+    LCD_DrawStringInverse("OK", 58, 7);
+    LCD_DrawStringInverse("-", 88, 7);
+    char buff[10] = {0};
+    while (change_brightness) {
+        snprintf(buff, 10, "%5d", LCD_BRIGHTNESS);
+        LCD_DrawString(buff, 50, 3);
+        if (!HAL_GPIO_ReadPin(BTN1_GPIO_Port, BTN1_Pin)) {
+            LCD_BRIGHTNESS += 100;
+            //HAL_Delay(1);
+        }
+        if (!HAL_GPIO_ReadPin(BTN3_GPIO_Port, BTN3_Pin)) {
+            LCD_BRIGHTNESS -= 100;
+            //HAL_Delay(1);
+        }
     }
 }
 
@@ -157,6 +222,7 @@ int main(void)
     while (1) {
         menuLoop();
         drawingLoop();
+        brightnessLoop();
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
@@ -501,9 +567,42 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    if (GPIO_Pin == BTN1_Pin) {
-        menu = 0;
+    if (drawing && GPIO_Pin == BTN2_Pin) {
+        clear = 1;
+        return;
+    }
+
+    if (menu && GPIO_Pin == BTN3_Pin) {
+        item == CHANGE_BRIGHTNESS ? item = 0 : item++;
+        return;
+    }
+    if (menu && GPIO_Pin == BTN1_Pin) {
+        item == 0 ? item = CHANGE_BRIGHTNESS : item--;
+        return;
+    }
+
+    if (menu && item == NEW_DRAWING && GPIO_Pin == BTN2_Pin) {
+        menu    = 0;
         drawing = 1;
+        return;
+    }
+    if (menu && item == CHANGE_BRIGHTNESS && GPIO_Pin == BTN2_Pin) {
+        menu              = 0;
+        change_brightness = 1;
+        return;
+    }
+
+    if (drawing && GPIO_Pin == BTN1_Pin) {
+        drawing           = 0;
+        change_brightness = 0;
+        menu              = 1;
+        return;
+    }
+    if (change_brightness && GPIO_Pin == BTN2_Pin) {
+        drawing           = 0;
+        change_brightness = 0;
+        menu              = 1;
+        return;
     }
 }
 /* USER CODE END 4 */
@@ -541,4 +640,3 @@ void assert_failed(uint8_t *file, uint32_t line)
     /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-

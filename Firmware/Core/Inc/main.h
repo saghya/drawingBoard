@@ -83,8 +83,8 @@ void Error_Handler(void);
 #define LCD_DB5_GPIO_Port GPIOC
 #define LCD_CS2_Pin GPIO_PIN_8
 #define LCD_CS2_GPIO_Port GPIOC
-#define BL_PWM_Pin GPIO_PIN_9
-#define BL_PWM_GPIO_Port GPIOC
+#define LCD_BL_PWM_Pin GPIO_PIN_9
+#define LCD_BL_PWM_GPIO_Port GPIOC
 #define LCD_DB3_Pin GPIO_PIN_8
 #define LCD_DB3_GPIO_Port GPIOA
 #define LCD_DB4_Pin GPIO_PIN_9

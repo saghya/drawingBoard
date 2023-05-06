@@ -28,6 +28,7 @@
 #include "stm32f4xx_hal_uart.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,43 +86,41 @@ static void MX_ADC2_Init(void);
 
 void menuLoop()
 {
+    char *menus[] = {"- Start new drawing", "- Load drawing", "- Save drawing",
+                     "- Change brightness"};
     LCD_Clear();
-    LCD_DrawString("Main menu", 40, 0);
-    LCD_DrawString("- Start new drawing", 1, 2);
-    LCD_DrawString("- Load drawing", 1, 3);
-    LCD_DrawString("- Save drawing", 1, 4);
-    LCD_DrawString("- Change brightness", 1, 5);
 
-    LCD_DrawStringInverse("UP", 28, 7);
-    LCD_DrawStringInverse("OK", 58, 7);
-    LCD_DrawStringInverse("DOWN", 85, 7);
+    LCD_DrawString("Main menu", 64 - 6 * 4, 0);
+
+    LCD_DrawStringInverse("UP", 32 - 6, 7);
+    LCD_DrawStringInverse("OK", 64 - 6, 7);
+    LCD_DrawStringInverse("DOWN", 96 - 2 * 6, 7);
+
     while (menu) {
-        //LCD_Clear();
-        switch (item) {
-            case NEW_DRAWING:
-                LCD_DrawStringInverse("- Start new drawing", 1, 2);
-                LCD_DrawString("- Load drawing", 1, 3);
-                LCD_DrawString("- Save drawing", 1, 4);
-                LCD_DrawString("- Change brightness", 1, 5);
-                break;
-            case LOAD_DRAWING:
-                LCD_DrawString("- Start new drawing", 1, 2);
-                LCD_DrawStringInverse("- Load drawing", 1, 3);
-                LCD_DrawString("- Save drawing", 1, 4);
-                LCD_DrawString("- Change brightness", 1, 5);
-                break;
-            case SAVE_DRAWING:
-                LCD_DrawString("- Start new drawing", 1, 2);
-                LCD_DrawString("- Load drawing", 1, 3);
-                LCD_DrawStringInverse("- Save drawing", 1, 4);
-                LCD_DrawString("- Change brightness", 1, 5);
-                break;
-            case CHANGE_BRIGHTNESS:
-                LCD_DrawString("- Start new drawing", 1, 2);
-                LCD_DrawString("- Load drawing", 1, 3);
-                LCD_DrawString("- Save drawing", 1, 4);
-                LCD_DrawStringInverse("- Change brightness", 1, 5);
-                break;
+        for (int i = 0; i < 4; i++) {
+            switch (item) {
+                case NEW_DRAWING:
+                    if (i == 0)
+                        i++;
+                    LCD_DrawStringInverse(menus[0], 1, 2);
+                    break;
+                case LOAD_DRAWING:
+                    if (i == 1)
+                        i++;
+                    LCD_DrawStringInverse(menus[1], 1, 3);
+                    break;
+                case SAVE_DRAWING:
+                    if (i == 2)
+                        i++;
+                    LCD_DrawStringInverse(menus[2], 1, 4);
+                    break;
+                case CHANGE_BRIGHTNESS:
+                    if (i == 3)
+                        continue;
+                    LCD_DrawStringInverse(menus[3], 1, 5);
+                    break;
+            }
+            LCD_DrawString(menus[i], 1, i + 2);
         }
     }
 }
@@ -129,6 +128,7 @@ void menuLoop()
 void drawingLoop()
 {
     LCD_Clear();
+
     while (drawing) {
         if (clear) {
             clear = 0;
@@ -156,22 +156,33 @@ void brightnessLoop()
 {
     LCD_Clear();
 
-    LCD_DrawString("Change brightness", 14, 0);
+    LCD_DrawString("Brightness", 64 - 6 * 5, 0);
 
-    LCD_DrawStringInverse("+", 35, 7);
-    LCD_DrawStringInverse("OK", 58, 7);
-    LCD_DrawStringInverse("-", 88, 7);
-    char buff[10] = {0};
+    LCD_DrawStringInverse("+", 32, 7);
+    LCD_DrawStringInverse("OK", 64 - 6, 7);
+    LCD_DrawStringInverse("-", 96 - 6, 7);
+
+    char buff[5] = {0};
     while (change_brightness) {
-        snprintf(buff, 10, "%5d", LCD_BRIGHTNESS);
-        LCD_DrawString(buff, 50, 3);
+        snprintf(buff, 5, "%3d%%", (LCD_BRIGHTNESS * 100) / 0xffff);
+        LCD_DrawString(buff, 64 - 6 * 2, 3);
+
         if (!HAL_GPIO_ReadPin(BTN1_GPIO_Port, BTN1_Pin)) {
-            LCD_BRIGHTNESS += 100;
-            //HAL_Delay(1);
+            if (99 * 0xffff / 100 < LCD_BRIGHTNESS) {
+                LCD_BRIGHTNESS = 0xffff;
+            } else {
+                LCD_BRIGHTNESS += 0xffff / 100;
+            }
+            HAL_Delay(25);
         }
+
         if (!HAL_GPIO_ReadPin(BTN3_GPIO_Port, BTN3_Pin)) {
-            LCD_BRIGHTNESS -= 100;
-            //HAL_Delay(1);
+            if (1 * 0xffff / 100 >= LCD_BRIGHTNESS) {
+                LCD_BRIGHTNESS = 0xffff / 100;
+            } else {
+                LCD_BRIGHTNESS -= 0xffff / 100;
+            }
+            HAL_Delay(25);
         }
     }
 }

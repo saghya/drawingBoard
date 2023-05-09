@@ -24,6 +24,7 @@
 #include "RG12864B.h"
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_adc.h"
+#include "stm32f4xx_hal_flash.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_uart.h"
 #include <stdint.h>
@@ -57,6 +58,7 @@ ADC_HandleTypeDef hadc2;
 DMA_HandleTypeDef hdma_adc1;
 DMA_HandleTypeDef hdma_adc2;
 
+TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart2;
@@ -67,6 +69,7 @@ uint32_t          y_values[ADC_PRECISION] = {0};
 uint32_t          x, y;
 volatile uint8_t  menu = 1, drawing = 0, change_brightness = 0, clear = 0;
 volatile MenuItem item = NEW_DRAWING;
+volatile uint8_t  asd  = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,12 +80,19 @@ static void MX_ADC1_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM8_Init(void);
 static void MX_ADC2_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void delay_us(uint16_t us)
+{
+    __HAL_TIM_SET_COUNTER(&htim1, 0); // set the counter value a 0
+    while (__HAL_TIM_GET_COUNTER(&htim1) < us)
+        ; // wait for the counter to reach the us input in the parameter
+}
 
 void menuLoop()
 {
@@ -97,6 +107,8 @@ void menuLoop()
     LCD_DrawStringInverse("DOWN", 96 - 2 * 6, 7);
 
     while (menu) {
+        HAL_ADC_Start_DMA(&hadc1, x_values, ADC_PRECISION);
+        HAL_ADC_Start_DMA(&hadc2, y_values, ADC_PRECISION);
         for (int i = 0; i < 4; i++) {
             switch (item) {
                 case NEW_DRAWING:
@@ -164,29 +176,30 @@ void brightnessLoop()
 
     char buff[5] = {0};
     while (change_brightness) {
-        snprintf(buff, 5, "%3d%%", (LCD_BRIGHTNESS * 100) / 0xffff);
+        snprintf(buff, 5, "%3d%%", (LCD_BRIGHTNESS * 100) / 0xFFFF);
         LCD_DrawString(buff, 64 - 6 * 2, 3);
 
         if (!HAL_GPIO_ReadPin(BTN1_GPIO_Port, BTN1_Pin)) {
-            if (99 * 0xffff / 100 < LCD_BRIGHTNESS) {
-                LCD_BRIGHTNESS = 0xffff;
+            if (99 * 0xFFFF / 100 < LCD_BRIGHTNESS) {
+                LCD_BRIGHTNESS = 0xFFFF;
             } else {
-                LCD_BRIGHTNESS += 0xffff / 100;
+                LCD_BRIGHTNESS += 0xFFFF / 100;
             }
             HAL_Delay(25);
         }
 
         if (!HAL_GPIO_ReadPin(BTN3_GPIO_Port, BTN3_Pin)) {
-            if (1 * 0xffff / 100 >= LCD_BRIGHTNESS) {
-                LCD_BRIGHTNESS = 0xffff / 100;
+            if (1 * 0xFFFF / 100 >= LCD_BRIGHTNESS) {
+                LCD_BRIGHTNESS = 0xFFFF / 100;
             } else {
-                LCD_BRIGHTNESS -= 0xffff / 100;
+                LCD_BRIGHTNESS -= 0xFFFF / 100;
             }
             HAL_Delay(25);
         }
     }
-}
 
+    LCD_SetBrightness(LCD_BRIGHTNESS);
+}
 /* USER CODE END 0 */
 
 /**
@@ -224,7 +237,9 @@ int main(void)
     MX_USART2_UART_Init();
     MX_TIM8_Init();
     MX_ADC2_Init();
+    MX_TIM1_Init();
     /* USER CODE BEGIN 2 */
+    HAL_TIM_Base_Start(&htim1);
     LCD_Init();
     /* USER CODE END 2 */
 
@@ -382,6 +397,49 @@ static void MX_ADC2_Init(void)
     /* USER CODE BEGIN ADC2_Init 2 */
 
     /* USER CODE END ADC2_Init 2 */
+}
+
+/**
+ * @brief TIM1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_TIM1_Init(void)
+{
+
+    /* USER CODE BEGIN TIM1_Init 0 */
+
+    /* USER CODE END TIM1_Init 0 */
+
+    TIM_ClockConfigTypeDef  sClockSourceConfig = {0};
+    TIM_MasterConfigTypeDef sMasterConfig      = {0};
+
+    /* USER CODE BEGIN TIM1_Init 1 */
+
+    /* USER CODE END TIM1_Init 1 */
+    htim1.Instance               = TIM1;
+    htim1.Init.Prescaler         = 84 - 1;
+    htim1.Init.CounterMode       = TIM_COUNTERMODE_UP;
+    htim1.Init.Period            = 0xFFFF - 1;
+    htim1.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+    htim1.Init.RepetitionCounter = 0;
+    htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+    if (HAL_TIM_Base_Init(&htim1) != HAL_OK) {
+        Error_Handler();
+    }
+    sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+    if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK) {
+        Error_Handler();
+    }
+    sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+    sMasterConfig.MasterSlaveMode     = TIM_MASTERSLAVEMODE_DISABLE;
+    if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) !=
+        HAL_OK) {
+        Error_Handler();
+    }
+    /* USER CODE BEGIN TIM1_Init 2 */
+
+    /* USER CODE END TIM1_Init 2 */
 }
 
 /**

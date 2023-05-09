@@ -18,9 +18,7 @@ void LCD_SendByte(uint8_t data)
     }
 
     HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_SET);
-    for (int i = 0; i < 1000; i++) { // dirty delay
-        __ASM("nop");
-    }
+    delay_us(5);
     HAL_GPIO_WritePin(LCD_E_GPIO_Port, LCD_E_Pin, GPIO_PIN_RESET);
 }
 
@@ -53,18 +51,30 @@ void LCD_Clear()
 void LCD_Init()
 {
     HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
-    LCD_SetBrightness(0xffff);
     HAL_GPIO_WritePin(xLCD_EN_GPIO_Port, xLCD_EN_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(LCD_RST_GPIO_Port, LCD_RST_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(LCD_R_W_GPIO_Port, LCD_R_W_Pin, LCD_WRITE);
 
+    LCD_BRIGHTNESS = LCD_BRIGHTNESS_FLASH;
+
     LCD_Instruction(LCD_ON);
     LCD_Clear();
 }
 
-void LCD_SetBrightness(uint16_t b) { LCD_BRIGHTNESS = b; }
+void LCD_SetBrightness(uint16_t b)
+{
+    if (b == LCD_BRIGHTNESS_FLASH) {
+        return;
+    }
+
+    HAL_FLASH_Unlock();
+    FLASH_Erase_Sector(7, FLASH_VOLTAGE_RANGE_3);
+    HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, LCD_BRIGHTNESS_FLASH_ADDR,
+                      (uint64_t)LCD_BRIGHTNESS);
+    HAL_FLASH_Lock();
+}
 
 void LCD_SetPos(uint8_t x, uint8_t p)
 {

@@ -9,7 +9,7 @@ GPIO_TypeDef *LCD_DB_GPIO_Port[8] = {
 uint16_t LCD_DB_Pin[8] = {LCD_DB0_Pin, LCD_DB1_Pin, LCD_DB2_Pin, LCD_DB3_Pin,
                           LCD_DB4_Pin, LCD_DB5_Pin, LCD_DB6_Pin, LCD_DB7_Pin};
 
-uint8_t bitmap[8][128] = {0};
+uint8_t LCD_bitmap[8][128] = {0};
 
 void LCD_SendByte(uint8_t data)
 {
@@ -38,7 +38,6 @@ void LCD_Clear()
 {
     HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_RESET);
-    memset(bitmap, 0, LCD_WIDTH * LCD_HEIGHT / 8);
     for (int i = 0; i < 8; i++) {
         LCD_Instruction(PAGE_BASE | i);
         LCD_Instruction(X_BASE);
@@ -46,6 +45,34 @@ void LCD_Clear()
             LCD_Data(0);
         }
     }
+}
+
+void LCD_ClearBitmap()
+{
+    memset(LCD_bitmap, 0, LCD_WIDTH * LCD_HEIGHT / 8);
+}
+
+void LCD_DrawBitmap()
+{
+	HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_SET);
+	for (int i = 0; i < 8; i++) {
+		LCD_Instruction(PAGE_BASE | i);
+		LCD_Instruction(X_BASE);
+		for (int j = 0; j < 64; j++) {
+			LCD_Data(LCD_bitmap[i][j]);
+		}
+	}
+
+	HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_RESET);
+	for (int i = 0; i < 8; i++) {
+		LCD_Instruction(PAGE_BASE | i);
+		LCD_Instruction(X_BASE);
+		for (int j = 64; j < 128; j++) {
+			LCD_Data(LCD_bitmap[i][j]);
+		}
+	}
 }
 
 void LCD_Init()
@@ -61,19 +88,6 @@ void LCD_Init()
 
     LCD_Instruction(LCD_ON);
     LCD_Clear();
-}
-
-void LCD_SetBrightness(uint16_t b)
-{
-    if (b == LCD_BRIGHTNESS_FLASH) {
-        return;
-    }
-
-    HAL_FLASH_Unlock();
-    FLASH_Erase_Sector(7, FLASH_VOLTAGE_RANGE_3);
-    HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, LCD_BRIGHTNESS_FLASH_ADDR,
-                      (uint64_t)LCD_BRIGHTNESS);
-    HAL_FLASH_Lock();
 }
 
 void LCD_SetPos(uint8_t x, uint8_t p)
@@ -93,21 +107,21 @@ void LCD_SetPos(uint8_t x, uint8_t p)
 
 void LCD_SetPixel(uint8_t x, uint8_t y)
 {
-    bitmap[y / 8][x] |= 1 << y % 8;
+    LCD_bitmap[y / 8][x] |= 1 << y % 8;
     LCD_SetPos(x, y / 8);
-    LCD_Data(bitmap[y / 8][x]);
+    LCD_Data(LCD_bitmap[y / 8][x]);
 }
 
 void LCD_ResetPixel(uint8_t x, uint8_t y)
 {
-    bitmap[y / 8][x] &= ~(1 << y % 8);
+    LCD_bitmap[y / 8][x] &= ~(1 << y % 8);
     LCD_SetPos(x, y / 8);
-    LCD_Data(bitmap[y / 8][x]);
+    LCD_Data(LCD_bitmap[y / 8][x]);
 }
 
 void LCD_TogglePixel(uint8_t x, uint8_t y)
 {
-    if (bitmap[y / 8][x] & 1 << y % 8) {
+    if (LCD_bitmap[y / 8][x] & 1 << y % 8) {
         LCD_ResetPixel(x, y);
     } else {
         LCD_SetPixel(x, y);

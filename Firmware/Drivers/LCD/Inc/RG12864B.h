@@ -22,6 +22,8 @@ extern TIM_HandleTypeDef htim8; // timer used for brightness
 
 void LCD_Init();
 void LCD_Clear();
+void LCD_ClearBitmap();
+void LCD_DrawBitmap();
 void LCD_SetBrightness(uint16_t b);
 void LCD_SetPos(uint8_t x, uint8_t y);
 void LCD_SetPixel(uint8_t x, uint8_t y);

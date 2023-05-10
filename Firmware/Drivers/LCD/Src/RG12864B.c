@@ -9,7 +9,7 @@ GPIO_TypeDef *LCD_DB_GPIO_Port[8] = {
 uint16_t LCD_DB_Pin[8] = {LCD_DB0_Pin, LCD_DB1_Pin, LCD_DB2_Pin, LCD_DB3_Pin,
                           LCD_DB4_Pin, LCD_DB5_Pin, LCD_DB6_Pin, LCD_DB7_Pin};
 
-uint8_t LCD_bitmap[8][128] = {0};
+uint8_t LCD_bitmap[8][LCD_WIDTH] = {0};
 
 void LCD_SendByte(uint8_t data)
 {
@@ -47,32 +47,29 @@ void LCD_Clear()
     }
 }
 
-void LCD_ClearBitmap()
-{
-    memset(LCD_bitmap, 0, LCD_WIDTH * LCD_HEIGHT / 8);
-}
+void LCD_ClearBitmap() { memset(LCD_bitmap, 0, LCD_WIDTH * LCD_HEIGHT / 8); }
 
 void LCD_DrawBitmap()
 {
-	HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_SET);
-	for (int i = 0; i < 8; i++) {
-		LCD_Instruction(PAGE_BASE | i);
-		LCD_Instruction(X_BASE);
-		for (int j = 0; j < 64; j++) {
-			LCD_Data(LCD_bitmap[i][j]);
-		}
-	}
+    HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_SET);
+    for (int i = 0; i < 8; i++) {
+        LCD_Instruction(PAGE_BASE | i);
+        LCD_Instruction(X_BASE);
+        for (int j = 0; j < LCD_WIDTH / 2; j++) {
+            LCD_Data(LCD_bitmap[i][j]);
+        }
+    }
 
-	HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_RESET);
-	for (int i = 0; i < 8; i++) {
-		LCD_Instruction(PAGE_BASE | i);
-		LCD_Instruction(X_BASE);
-		for (int j = 64; j < 128; j++) {
-			LCD_Data(LCD_bitmap[i][j]);
-		}
-	}
+    HAL_GPIO_WritePin(LCD_CS1_GPIO_Port, LCD_CS1_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LCD_CS2_GPIO_Port, LCD_CS2_Pin, GPIO_PIN_RESET);
+    for (int i = 0; i < 8; i++) {
+        LCD_Instruction(PAGE_BASE | i);
+        LCD_Instruction(X_BASE);
+        for (int j = LCD_WIDTH / 2; j < LCD_WIDTH; j++) {
+            LCD_Data(LCD_bitmap[i][j]);
+        }
+    }
 }
 
 void LCD_Init()

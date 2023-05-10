@@ -16,7 +16,7 @@
 #define LCD_WRITE                 GPIO_PIN_RESET
 #define LCD_BRIGHTNESS            TIM8->CCR4
 #define LCD_BRIGHTNESS_FLASH      *(__IO uint16_t *)LCD_BRIGHTNESS_FLASH_ADDR
-#define LCD_BRIGHTNESS_FLASH_ADDR 0x08060000
+#define LCD_BRIGHTNESS_FLASH_ADDR 0x0800C000
 
 extern TIM_HandleTypeDef htim8; // timer used for brightness
 

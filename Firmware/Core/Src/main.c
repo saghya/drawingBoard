@@ -38,18 +38,17 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 typedef enum {
-    NEW_DRAWING,
-    LOAD_DRAWING,
-    SAVE_DRAWING,
-    CHANGE_BRIGHTNESS
+    M_NEW_DRAWING,
+    M_LOAD_DRAWING,
+    M_SAVE_DRAWING,
+    M_CHANGE_BRIGHTNESS
 } MenuItem;
 
-typedef struct {
-    uint8_t menu : 1;
-    uint8_t drawing : 1;
-    uint8_t newDrawing : 1;
-    uint8_t change_brightness : 1;
-    uint8_t save : 1;
+typedef enum {
+    S_MENU,
+    S_DRAWING,
+    S_SAVE,
+    S_CHANGE_BRIGHTNESS,
 } State;
 /* USER CODE END PTD */
 
@@ -57,6 +56,7 @@ typedef struct {
 /* USER CODE BEGIN PD */
 #define ADC_PRECISION         4096
 #define LCD_BITMAP_FLASH_ADDR 0x0800C100
+#define RX_BUFF_SIZE          4
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -71,7 +71,6 @@ DMA_HandleTypeDef hdma_adc1;
 DMA_HandleTypeDef hdma_adc2;
 
 TIM_HandleTypeDef htim1;
-TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart2;
@@ -81,12 +80,12 @@ extern uint8_t    LCD_bitmap[8][LCD_WIDTH];
 uint32_t          x_values[ADC_PRECISION] = {0};
 uint32_t          y_values[ADC_PRECISION] = {0};
 uint32_t          x, y;
-volatile MenuItem selectedMenu = NEW_DRAWING;
-volatile State    state        = {.menu              = 1,
-                                  .drawing           = 0,
-                                  .newDrawing        = 0,
-                                  .change_brightness = 0,
-                                  .save              = 0};
+volatile MenuItem selectedMenu          = M_NEW_DRAWING;
+volatile State    state                 = S_MENU;
+uint8_t           newDrawing            = 0;
+uint8_t           Rx_buff[RX_BUFF_SIZE] = {0};
+uint8_t           Rx_byte;
+uint8_t           Rx_LCD_bitmap[8][LCD_WIDTH];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,7 +97,6 @@ static void MX_USART2_UART_Init(void);
 static void MX_TIM8_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_TIM1_Init(void);
-static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -142,27 +140,27 @@ void menuLoop()
     LCD_DrawStringInverse("OK", 64 - 6, 7);
     LCD_DrawStringInverse("DOWN", 96 - 2 * 6, 7);
 
-    while (state.menu) {
+    while (state == S_MENU) {
         HAL_ADC_Start_DMA(&hadc1, x_values, ADC_PRECISION);
         HAL_ADC_Start_DMA(&hadc2, y_values, ADC_PRECISION);
         for (int i = 0; i < 4; i++) {
             switch (selectedMenu) {
-                case NEW_DRAWING:
+                case M_NEW_DRAWING:
                     if (i == 0)
                         i++;
                     LCD_DrawStringInverse(menus[0], 1, 2);
                     break;
-                case LOAD_DRAWING:
+                case M_LOAD_DRAWING:
                     if (i == 1)
                         i++;
                     LCD_DrawStringInverse(menus[1], 1, 3);
                     break;
-                case SAVE_DRAWING:
+                case M_SAVE_DRAWING:
                     if (i == 2)
                         i++;
                     LCD_DrawStringInverse(menus[2], 1, 4);
                     break;
-                case CHANGE_BRIGHTNESS:
+                case M_CHANGE_BRIGHTNESS:
                     if (i == 3)
                         continue;
                     LCD_DrawStringInverse(menus[3], 1, 5);
@@ -176,22 +174,17 @@ void menuLoop()
 void drawingLoop()
 {
     LCD_Clear();
-    if (state.newDrawing) {
-        state.newDrawing = 0;
+    if (newDrawing) {
+        newDrawing = 0;
         LCD_ClearBitmap();
     } else {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < LCD_WIDTH; j++) {
-                LCD_bitmap[i][j] = *(__IO uint8_t *)(LCD_BITMAP_FLASH_ADDR +
-                                                     i * LCD_WIDTH + j);
-            }
-        }
+        memcpy(LCD_bitmap, (void *)LCD_BITMAP_FLASH_ADDR, 8 * LCD_WIDTH);
         LCD_DrawBitmap();
     }
 
-    while (state.drawing) {
-        if (state.newDrawing) {
-            state.newDrawing = 0;
+    while (state == S_DRAWING) {
+        if (newDrawing) {
+            newDrawing = 0;
             LCD_Clear();
             LCD_ClearBitmap();
         }
@@ -224,7 +217,7 @@ void brightnessLoop()
     LCD_DrawStringInverse("-", 96 - 6, 7);
 
     char buff[5] = {0};
-    while (state.change_brightness) {
+    while (state == S_CHANGE_BRIGHTNESS) {
         snprintf(buff, 5, "%3d%%", (LCD_BRIGHTNESS * 100) / 0xFFFF);
         LCD_DrawString(buff, 64 - 6 * 2, 3);
 
@@ -254,15 +247,12 @@ void brightnessLoop()
 
 void saveDrawing()
 {
-    if (state.save) {
-        LCD_Clear();
-        LCD_DrawString("Saving...", 64 - 5 * 5, 3);
-        state.save = 0;
-        state.menu = 1;
-        //uart
-        HAL_UART_Transmit(&huart2, "Hello mi?\n\r", 13, 100);
-        updateFlash();
-    }
+    state = S_MENU;
+    LCD_Clear();
+    LCD_DrawString("Saving...", 64 - 5 * 5, 3);
+    //uart
+    HAL_UART_Transmit(&huart2, "Hello mi?\n\r", 13, 100);
+    updateFlash();
 }
 /* USER CODE END 0 */
 
@@ -302,27 +292,28 @@ int main(void)
     MX_TIM8_Init();
     MX_ADC2_Init();
     MX_TIM1_Init();
-    MX_TIM3_Init();
     /* USER CODE BEGIN 2 */
     HAL_TIM_Base_Start(&htim1);
-    HAL_TIM_Base_Start_IT(&htim3);
+    HAL_UART_Receive_IT(&huart2, &Rx_byte, 1);
     LCD_Init();
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
-        if (state.menu) {
-            menuLoop();
-        }
-        if (state.drawing) {
-            drawingLoop();
-        }
-        if (state.save) {
-            saveDrawing();
-        }
-        if (state.change_brightness) {
-            brightnessLoop();
+        switch (state) {
+            case S_MENU:
+                menuLoop();
+                break;
+            case S_DRAWING:
+                drawingLoop();
+                break;
+            case S_SAVE:
+                saveDrawing();
+                break;
+            case S_CHANGE_BRIGHTNESS:
+                brightnessLoop();
+                break;
         }
         /* USER CODE END WHILE */
 
@@ -399,7 +390,7 @@ static void MX_ADC1_Init(void)
     hadc1.Instance                   = ADC1;
     hadc1.Init.ClockPrescaler        = ADC_CLOCK_SYNC_PCLK_DIV4;
     hadc1.Init.Resolution            = ADC_RESOLUTION_12B;
-    hadc1.Init.ScanConvMode          = DISABLE;
+    hadc1.Init.ScanConvMode          = ENABLE;
     hadc1.Init.ContinuousConvMode    = ENABLE;
     hadc1.Init.DiscontinuousConvMode = DISABLE;
     hadc1.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;
@@ -515,48 +506,6 @@ static void MX_TIM1_Init(void)
     /* USER CODE BEGIN TIM1_Init 2 */
 
     /* USER CODE END TIM1_Init 2 */
-}
-
-/**
- * @brief TIM3 Initialization Function
- * @param None
- * @retval None
- */
-static void MX_TIM3_Init(void)
-{
-
-    /* USER CODE BEGIN TIM3_Init 0 */
-
-    /* USER CODE END TIM3_Init 0 */
-
-    TIM_ClockConfigTypeDef  sClockSourceConfig = {0};
-    TIM_MasterConfigTypeDef sMasterConfig      = {0};
-
-    /* USER CODE BEGIN TIM3_Init 1 */
-
-    /* USER CODE END TIM3_Init 1 */
-    htim3.Instance               = TIM3;
-    htim3.Init.Prescaler         = 840 - 1;
-    htim3.Init.CounterMode       = TIM_COUNTERMODE_UP;
-    htim3.Init.Period            = 30000 - 1;
-    htim3.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
-    htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-    if (HAL_TIM_Base_Init(&htim3) != HAL_OK) {
-        Error_Handler();
-    }
-    sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-    if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK) {
-        Error_Handler();
-    }
-    sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-    sMasterConfig.MasterSlaveMode     = TIM_MASTERSLAVEMODE_DISABLE;
-    if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) !=
-        HAL_OK) {
-        Error_Handler();
-    }
-    /* USER CODE BEGIN TIM3_Init 2 */
-
-    /* USER CODE END TIM3_Init 2 */
 }
 
 /**
@@ -753,59 +702,76 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    NVIC_DisableIRQ(EXTI15_10_IRQn);
-    TIM3->CNT = 0;
-
-    if (state.menu && GPIO_Pin == BTN3_Pin) {
-        selectedMenu == CHANGE_BRIGHTNESS ? selectedMenu = 0 : selectedMenu++;
-        return;
-    }
-    if (state.menu && GPIO_Pin == BTN1_Pin) {
-        selectedMenu == 0 ? selectedMenu = CHANGE_BRIGHTNESS : selectedMenu--;
-        return;
-    }
-    if (state.menu && GPIO_Pin == BTN2_Pin) {
-        state.menu = 0;
-        switch (selectedMenu) {
-            case NEW_DRAWING:
-                state.drawing    = 1;
-                state.newDrawing = 1;
-                break;
-            case LOAD_DRAWING:
-                state.drawing    = 1;
-                state.newDrawing = 0;
-                break;
-            case SAVE_DRAWING:
-                state.save = 1;
-                break;
-            case CHANGE_BRIGHTNESS:
-                state.change_brightness = 1;
-                break;
-        }
-        return;
-    }
-
-    if (state.drawing && GPIO_Pin == BTN2_Pin) {
-        state.newDrawing = 1;
-        return;
-    }
-    if (state.drawing && GPIO_Pin == BTN1_Pin) {
-        state.drawing = 0;
-        state.menu    = 1;
-        return;
-    }
-    if (state.change_brightness && GPIO_Pin == BTN2_Pin) {
-        state.change_brightness = 0;
-        state.menu              = 1;
-        return;
+    switch (state) {
+        case S_MENU:
+            if (GPIO_Pin == BTN3_Pin) {
+                selectedMenu == M_CHANGE_BRIGHTNESS ? selectedMenu = 0
+                                                    : selectedMenu++;
+            } else if (GPIO_Pin == BTN1_Pin) {
+                selectedMenu == 0 ? selectedMenu = M_CHANGE_BRIGHTNESS
+                                  : selectedMenu--;
+            } else if (GPIO_Pin == BTN2_Pin) {
+                switch (selectedMenu) {
+                    case M_NEW_DRAWING:
+                        newDrawing = 1;
+                    case M_LOAD_DRAWING:
+                        state = S_DRAWING;
+                        break;
+                    case M_SAVE_DRAWING:
+                        state = S_SAVE;
+                        break;
+                    case M_CHANGE_BRIGHTNESS:
+                        state = S_CHANGE_BRIGHTNESS;
+                        break;
+                }
+            }
+            break;
+        case S_DRAWING:
+            if (GPIO_Pin == BTN3_Pin) {
+                newDrawing = 1;
+            } else if (GPIO_Pin == BTN1_Pin) {
+                state = S_MENU;
+            }
+            break;
+        case S_SAVE:
+            break;
+        case S_CHANGE_BRIGHTNESS:
+            if (GPIO_Pin == BTN2_Pin) {
+                state = S_MENU;
+            }
+            break;
     }
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    if (htim == &htim3) {
-        HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+    static uint8_t i = 0, f = 0;
+    if (Rx_byte == '@') {
+        i = 0;
+        f = 1;
+    } else if (f) {
+        Rx_buff[i < RX_BUFF_SIZE ? i++ : (i = 0)] = Rx_byte;
     }
+    if (i == RX_BUFF_SIZE) {
+        i = f = 0;
+        if (!strncmp((char *)Rx_buff, "SAVE", RX_BUFF_SIZE)) {
+            // TODO: Send drawing
+            //HAL_UART_Transmit_IT(&huart2, (uint8_t *)"SAVE\n\r", 6);
+            //state.save = 1;
+            //state.menu = state.change_brightness = state.drawing = 0;
+        } else if (!strncmp((char *)Rx_buff, "LOAD", RX_BUFF_SIZE)) {
+            // TODO: Receive drawing
+            //LCD_Clear();
+            //LCD_DrawString("Receiving...", 20, 3);
+            //HAL_UART_Receive(&huart2, (uint8_t*)Rx_LCD_bitmap, 8*LCD_WIDTH, -1);
+            //LCD_Clear();
+            //memcpy(LCD_bitmap, Rx_LCD_bitmap, 8*LCD_WIDTH);
+            //state.drawing    = 1;
+            //state.newDrawing = state.menu = state.change_brightness =
+            //    state.save                = 0;
+        }
+    }
+    HAL_UART_Receive_IT(&huart2, &Rx_byte, 1);
 }
 /* USER CODE END 4 */
 

@@ -26,6 +26,7 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_adc.h"
 #include "stm32f4xx_hal_cortex.h"
+#include "stm32f4xx_hal_def.h"
 #include "stm32f4xx_hal_flash.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_tim.h"
@@ -80,12 +81,12 @@ extern uint8_t    LCD_bitmap[8][LCD_WIDTH];
 uint32_t          x_values[ADC_PRECISION] = {0};
 uint32_t          y_values[ADC_PRECISION] = {0};
 uint32_t          x, y;
-volatile MenuItem selectedMenu          = M_NEW_DRAWING;
-volatile State    state                 = S_MENU;
-uint8_t           newDrawing            = 0;
+volatile MenuItem selectedMenu = M_NEW_DRAWING;
+volatile State    state        = S_MENU;
+uint8_t           newDrawing = 0, loadDrawing = 0, receiveDrawing = 0;
 uint8_t           Rx_buff[RX_BUFF_SIZE] = {0};
 uint8_t           Rx_byte;
-uint8_t           Rx_LCD_bitmap[8][LCD_WIDTH];
+uint8_t           Rx_LCD_bitmap[8][LCD_WIDTH] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -110,7 +111,7 @@ void delay_us(uint16_t us)
         ; // wait for the counter to reach the us input in the parameter
 }
 
-void updateFlash()
+void updateFlash(uint8_t bitmap[8][LCD_WIDTH])
 {
     HAL_FLASH_Unlock();
     FLASH_Erase_Sector(3, FLASH_VOLTAGE_RANGE_3);
@@ -122,10 +123,25 @@ void updateFlash()
         for (int j = 0; j < LCD_WIDTH; j++) {
             HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
                               LCD_BITMAP_FLASH_ADDR + i * LCD_WIDTH + j,
-                              (uint64_t)LCD_bitmap[i][j]);
+                              (uint64_t)bitmap[i][j]);
         }
     }
     HAL_FLASH_Lock();
+}
+
+void saveDrawing()
+{
+    state = S_MENU;
+    LCD_Clear();
+    LCD_DrawString("Saving...", 64 - 5 * 5, 3);
+    updateFlash(LCD_bitmap);
+}
+
+void saveBrightness()
+{
+    uint8_t LCD_bitmapFlash[8][LCD_WIDTH];
+    memcpy(LCD_bitmapFlash, (void *)LCD_BITMAP_FLASH_ADDR, 8 * LCD_WIDTH);
+    updateFlash(LCD_bitmapFlash);
 }
 
 void menuLoop()
@@ -173,15 +189,26 @@ void menuLoop()
 
 void drawingLoop()
 {
-    LCD_Clear();
+
     if (newDrawing) {
         newDrawing = 0;
         LCD_ClearBitmap();
-    } else {
+    } else if (loadDrawing) {
+        loadDrawing = 0;
         memcpy(LCD_bitmap, (void *)LCD_BITMAP_FLASH_ADDR, 8 * LCD_WIDTH);
-        LCD_DrawBitmap();
+    } else if (receiveDrawing) {
+        receiveDrawing = 0;
+        if (HAL_OK == HAL_UART_Receive(&huart2, (uint8_t *)Rx_LCD_bitmap,
+                                       8 * LCD_WIDTH, -1)) {
+            memcpy(LCD_bitmap, Rx_LCD_bitmap, 8 * LCD_WIDTH);
+        } else {
+            HAL_UART_Transmit(&huart2, (uint8_t *)"gatya\n\r", 7, -1);
+            state = S_MENU;
+        }
+        HAL_UART_Receive_IT(&huart2, &Rx_byte, 1);
     }
 
+    LCD_DrawBitmap();
     while (state == S_DRAWING) {
         if (newDrawing) {
             newDrawing = 0;
@@ -241,19 +268,10 @@ void brightnessLoop()
     }
 
     if (LCD_BRIGHTNESS != LCD_BRIGHTNESS_FLASH) {
-        updateFlash();
+        saveBrightness();
     }
 }
 
-void saveDrawing()
-{
-    state = S_MENU;
-    LCD_Clear();
-    LCD_DrawString("Saving...", 64 - 5 * 5, 3);
-    //uart
-    HAL_UART_Transmit(&huart2, "Hello mi?\n\r", 13, 100);
-    updateFlash();
-}
 /* USER CODE END 0 */
 
 /**
@@ -301,6 +319,7 @@ int main(void)
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
+        HAL_UART_Receive_IT(&huart2, &Rx_byte, 1);
         switch (state) {
             case S_MENU:
                 menuLoop();
@@ -713,9 +732,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
             } else if (GPIO_Pin == BTN2_Pin) {
                 switch (selectedMenu) {
                     case M_NEW_DRAWING:
+                        state      = S_DRAWING;
                         newDrawing = 1;
+                        break;
                     case M_LOAD_DRAWING:
-                        state = S_DRAWING;
+                        state       = S_DRAWING;
+                        loadDrawing = 1;
                         break;
                     case M_SAVE_DRAWING:
                         state = S_SAVE;
@@ -733,18 +755,21 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
                 state = S_MENU;
             }
             break;
-        case S_SAVE:
-            break;
         case S_CHANGE_BRIGHTNESS:
             if (GPIO_Pin == BTN2_Pin) {
                 state = S_MENU;
             }
+            break;
+        case S_SAVE:
             break;
     }
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
+    if (huart != &huart2) {
+        return;
+    }
     static uint8_t i = 0, f = 0;
     if (Rx_byte == '@') {
         i = 0;
@@ -755,23 +780,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     if (i == RX_BUFF_SIZE) {
         i = f = 0;
         if (!strncmp((char *)Rx_buff, "SAVE", RX_BUFF_SIZE)) {
-            // TODO: Send drawing
-            //HAL_UART_Transmit_IT(&huart2, (uint8_t *)"SAVE\n\r", 6);
-            //state.save = 1;
-            //state.menu = state.change_brightness = state.drawing = 0;
+            HAL_UART_Transmit(huart, (uint8_t *)"SAVE\n\r", 6, -1);
+            //HAL_UART_Transmit(huart, (uint8_t *)"SAVE\n\r", 6, -1);
+            //HAL_UART_Transmit_IT(huart, (uint8_t *)LCD_bitmap, 8 * LCD_WIDTH);
         } else if (!strncmp((char *)Rx_buff, "LOAD", RX_BUFF_SIZE)) {
-            // TODO: Receive drawing
-            //LCD_Clear();
-            //LCD_DrawString("Receiving...", 20, 3);
-            //HAL_UART_Receive(&huart2, (uint8_t*)Rx_LCD_bitmap, 8*LCD_WIDTH, -1);
-            //LCD_Clear();
-            //memcpy(LCD_bitmap, Rx_LCD_bitmap, 8*LCD_WIDTH);
-            //state.drawing    = 1;
-            //state.newDrawing = state.menu = state.change_brightness =
-            //    state.save                = 0;
+            HAL_UART_Transmit(huart, (uint8_t *)"come\n\r", 6, -1);
+            receiveDrawing = 1;
+            state          = S_DRAWING;
+            return;
         }
     }
-    HAL_UART_Receive_IT(&huart2, &Rx_byte, 1);
+    HAL_UART_Receive_IT(huart, &Rx_byte, 1);
 }
 /* USER CODE END 4 */
 

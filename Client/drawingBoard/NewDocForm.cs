@@ -20,6 +20,7 @@ namespace drawingBoard
         public string DrawingName
         {
             get { return tbDrawingName.Text; }
+            set { tbDrawingName.Text = value; }
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace drawingBoard
 {
@@ -48,6 +49,14 @@ namespace drawingBoard
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
+            while (String.IsNullOrWhiteSpace(form.DrawingName))
+            {
+                MessageBox.Show("Name cannot be empty");
+                form.DrawingName = "";
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
+            }
+
             DrawingDocument doc = new DrawingDocument(form.DrawingName);
             documents.Add(doc);
             createView(doc, true);
@@ -55,7 +64,17 @@ namespace drawingBoard
 
         public void OpenDocument()
         {
-
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "bin files (*.bin)|*.bin|All files (*.*)|*.*";
+            openFileDialog.RestoreDirectory = true;
+            string path = "";
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+            path = openFileDialog.FileName;
+            DrawingDocument doc = new DrawingDocument(Path.GetFileName(path));
+            documents.Add(doc);
+            doc.LoadDocument(path);
+            createView(doc, true);
         }
 
         public void CloseActiveView()
@@ -73,7 +92,17 @@ namespace drawingBoard
 
         public void SaveActiveDocument()
         {
+            if (ActiveDocument == null)
+                return;
 
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.RestoreDirectory = true;
+            saveFileDialog.Filter = "bin files (*.bin)|*.bin|All files (*.*)|*.*";
+            string path = "";
+            if (saveFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+            path = saveFileDialog.FileName;
+            ActiveDocument.SaveDocument(path);
         }
 
         public void UpdateActiveView()

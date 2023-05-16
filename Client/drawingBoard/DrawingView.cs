@@ -97,11 +97,20 @@ namespace drawingBoard
 
         private void DrawingView_MouseDown(object sender, MouseEventArgs e)
         {
+            int x = (int)((e.X - offset) / scale);
+            int y = (int)((e.Y - offset)/ scale);
             switch (e.Button)
             {
-                case MouseButtons.Left: draw = true; break;
-                case MouseButtons.Right: erase = true; break;
+                case MouseButtons.Left:
+                    draw = true;
+                    document.Drawing.Pixels[x, y] = true;
+                    break;
+                case MouseButtons.Right:
+                    erase = true;
+                    document.Drawing.Pixels[x, y] = false;
+                    break;
             }
+            Invalidate();
         }
 
         private void DrawingView_MouseUp(object sender, MouseEventArgs e)

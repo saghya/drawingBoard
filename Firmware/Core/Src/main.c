@@ -83,7 +83,7 @@ uint32_t          y_values[ADC_PRECISION] = {0};
 uint32_t          x, y;
 volatile MenuItem selectedMenu = M_NEW_DRAWING;
 volatile State    state        = S_MENU;
-uint8_t           newDrawing = 0, loadDrawing = 0, receiveDrawing = 0;
+uint8_t           newDrawing = 0, loadDrawing = 0;
 uint8_t           Rx_buff[RX_BUFF_SIZE] = {0};
 uint8_t           Rx_byte;
 /* USER CODE END PV */
@@ -194,9 +194,6 @@ void drawingLoop()
     } else if (loadDrawing) {
         loadDrawing = 0;
         memcpy(LCD_bitmap, (void *)LCD_BITMAP_FLASH_ADDR, 8 * LCD_WIDTH);
-    } else if (receiveDrawing) {
-        receiveDrawing = 0;
-        HAL_UART_Receive_IT(&huart2, &Rx_byte, 1);
     }
 
     LCD_DrawBitmap();
@@ -758,39 +755,36 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart != &huart2) {
+        HAL_UART_Receive_IT(huart, &Rx_byte, 1);
         return;
     }
 
-    static uint8_t  i = 0, command = 0, receive = 0;
-    static uint16_t j = 0;
-    static uint8_t  wtf;
-    if (Rx_byte == '@' && !receive) {
-        i = 0;
+    static uint16_t i       = 0;
+    static uint8_t  command = 0;
+
+    if (Rx_byte == '@') {
+        i       = 0;
         command = 1;
     } else if (command) {
-        Rx_buff[i < RX_BUFF_SIZE ? i++ : (i = command = 0)] = Rx_byte;
-    } else if (receive) {
-        if (j == 0) {
-            wtf = Rx_byte;
+        if (i < RX_BUFF_SIZE) {
+            Rx_buff[i++] = Rx_byte;
+        } else {
+            i = command = 0;
         }
-        ((uint8_t *)LCD_bitmap)[j < 8 * LCD_WIDTH ? j++ : (j = receive = 0)] = Rx_byte;
-        if (!receive) {
-            // for some reason the first element gets overwritten
-            LCD_bitmap[0][0] = wtf;
+    }
+
+    if (i == RX_BUFF_SIZE) {
+        i = command = 0;
+        if (!strncmp((char *)Rx_buff, "SAVE", RX_BUFF_SIZE)) {
+            HAL_UART_Transmit(huart, (uint8_t *)LCD_bitmap, 8 * LCD_WIDTH, -1);
+        } else if (!strncmp((char *)Rx_buff, "LOAD", RX_BUFF_SIZE)) {
+            HAL_UART_Transmit(huart, (uint8_t *)"LOADING...\n\r", 12, -1);
+            HAL_UART_Receive(huart, (uint8_t *)LCD_bitmap, 8 * LCD_WIDTH, -1);
             LCD_DrawBitmap();
             state = S_DRAWING;
         }
     }
-    if (i == RX_BUFF_SIZE) {
-        i = command = 0;
-        if (!strncmp((char *)Rx_buff, "SAVE", RX_BUFF_SIZE)) {
-            HAL_UART_Transmit(huart, (uint8_t *)"SAVING...\n\r", 11, -1);
-            HAL_UART_Transmit(huart, (uint8_t *)LCD_bitmap, 8 * LCD_WIDTH, -1);
-        } else if (!strncmp((char *)Rx_buff, "LOAD", RX_BUFF_SIZE)) {
-            HAL_UART_Transmit(huart, (uint8_t *)"LOADING...\n\r", 12, -1);
-            receive = 1;
-        }
-    }
+
     HAL_UART_Receive_IT(huart, &Rx_byte, 1);
 }
 /* USER CODE END 4 */

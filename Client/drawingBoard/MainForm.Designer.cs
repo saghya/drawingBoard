@@ -36,6 +36,8 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tcDrawings = new System.Windows.Forms.TabControl();
+            this.sendToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.receiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,6 +57,8 @@
             this.newToolStripMenuItem,
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem,
+            this.sendToolStripMenuItem,
+            this.receiveToolStripMenuItem,
             this.closeToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -106,6 +110,20 @@
             this.tcDrawings.TabIndex = 1;
             this.tcDrawings.SelectedIndexChanged += new System.EventHandler(this.tcDrawings_SelectedIndexChanged);
             // 
+            // sendToolStripMenuItem
+            // 
+            this.sendToolStripMenuItem.Name = "sendToolStripMenuItem";
+            this.sendToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sendToolStripMenuItem.Text = "Send";
+            this.sendToolStripMenuItem.Click += new System.EventHandler(this.sendToolStripMenuItem_Click);
+            // 
+            // receiveToolStripMenuItem
+            // 
+            this.receiveToolStripMenuItem.Name = "receiveToolStripMenuItem";
+            this.receiveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.receiveToolStripMenuItem.Text = "Receive";
+            this.receiveToolStripMenuItem.Click += new System.EventHandler(this.receiveToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -133,6 +151,8 @@
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.TabControl tcDrawings;
+        private System.Windows.Forms.ToolStripMenuItem sendToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem receiveToolStripMenuItem;
     }
 }
 

@@ -51,5 +51,15 @@ namespace drawingBoard
         {
             this.Close();
         }
+
+        private void sendToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            App.Instance.SendActiveDocument();
+        }
+
+        private void receiveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            App.Instance.ReceiveDocument();
+        }
     }
 }

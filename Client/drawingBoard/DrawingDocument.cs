@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,12 +17,12 @@ namespace drawingBoard
             Drawing = new Drawing();
         }
 
-        public override void SaveDocument(string filePath)
+        private byte[,] createBitmapFromDrawing()
         {
             byte[,] d = new byte[Drawing.Width, Drawing.Height/8];
-            for (int x = 0; x < Drawing.Width; x++)
+            for (int y = 0; y < Drawing.Height/8; y++)
             {
-                for (int y = 0; y < Drawing.Height/8; y++)
+                for (int x = 0; x < Drawing.Width; x++)
                 {
                     for (int i = 0; i < 8; i++)
                     {
@@ -32,17 +33,41 @@ namespace drawingBoard
                     }
                 }
             }
+            return d;
+        }
+
+        private void createDrawingFromBitmap(byte[,] d)
+        {
+            for (int y = 0; y < Drawing.Height/8; y++)
+            {
+                for (int x = 0; x < Drawing.Width; x++)
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+                        if ((d[x,y] & (1 << i)) != 0)
+                        {
+                            Drawing.Pixels[x, y * 8 + i] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        public override void SaveDocument(string filePath)
+        {
+            byte[,] d = createBitmapFromDrawing();
 
             using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
             {
                 BinaryWriter bw = new BinaryWriter(fs);
-                for (int x = 0; x < Drawing.Width; x++)
+                for (int y = 0; y < Drawing.Height/8; y++)
                 {
-                    for (int y = 0; y < Drawing.Height/8; y++)
+                    for (int x = 0; x < Drawing.Width; x++)
                     {
                         bw.Write(d[x, y]);
                     }
                 }
+
                 bw.Close();
             }
         }
@@ -54,9 +79,9 @@ namespace drawingBoard
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
                 BinaryReader br = new BinaryReader(fs);
-                for (int x = 0; x < Drawing.Width; x++)
+                for (int y = 0; y < Drawing.Height/8; y++)
                 {
-                    for (int y = 0; y < Drawing.Height/8; y++)
+                    for (int x = 0; x < Drawing.Width; x++)
                     {
                         d[x, y] = br.ReadByte();
                     }
@@ -64,19 +89,45 @@ namespace drawingBoard
                 br.Close();
             }
 
-            for (int x = 0; x < Drawing.Width; x++)
+            createDrawingFromBitmap(d);
+        }
+
+        public override void ReceiveDocument(string COM)
+        {
+            byte[,] d = new byte[Drawing.Width, Drawing.Height/8];
+            SerialPort serialPort = new SerialPort(COM, 115200);
+            serialPort.Open();
+            serialPort.Write("@SAVE");
+            for (int y = 0; y < Drawing.Height/8; y++)
             {
-                for (int y = 0; y < Drawing.Height/8; y++)
+                for (int x = 0; x < Drawing.Width; x++)
                 {
-                    for (int i = 0; i < 8; i++)
-                    {
-                        if ((d[x,y] & (1 << i)) != 0)
-                        {
-                            Drawing.Pixels[x, y * 8 + i] = true;
-                        }
-                    }
+                    var wtf = new byte[1];
+                    serialPort.Read(wtf, 0, 1);
+                    d[x, y] = wtf[0];
                 }
             }
+            createDrawingFromBitmap(d);
+        }
+
+        public override void SendDocument(string COM)
+        {
+            byte[,] d = createBitmapFromDrawing();
+            SerialPort serialPort = new SerialPort(COM, 115200);
+            serialPort.Open();
+            serialPort.Write("@LOAD");
+            serialPort.Close();
+            serialPort.Open();
+            for (int y = 0; y < Drawing.Height / 8; y++)
+            {
+                for (int x = 0; x < Drawing.Width; x++)
+                {
+                    var wtf = new byte[] { d[x, y] };
+                    serialPort.Write(wtf, 0 ,1);
+                }
+            }
+
+            serialPort.Close();
         }
     }
 }

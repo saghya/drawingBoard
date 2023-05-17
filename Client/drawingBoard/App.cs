@@ -104,6 +104,33 @@ namespace drawingBoard
             path = saveFileDialog.FileName;
             ActiveDocument.SaveDocument(path);
         }
+        
+        public void SendActiveDocument()
+        {
+            if (ActiveDocument == null)
+                return;
+            ActiveDocument.SendDocument("COM3");
+        }
+
+        public void ReceiveDocument()
+        {
+            NewDocForm form = new NewDocForm();
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            while (String.IsNullOrWhiteSpace(form.DrawingName))
+            {
+                MessageBox.Show("Name cannot be empty");
+                form.DrawingName = "";
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
+            }
+
+            DrawingDocument doc = new DrawingDocument(form.DrawingName);
+            doc.ReceiveDocument("COM3");
+            documents.Add(doc);
+            createView(doc, true);
+        }
 
         public void UpdateActiveView()
         {

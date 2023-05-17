@@ -53,5 +53,15 @@ namespace drawingBoard
         {
 
         }
+
+        public virtual void ReceiveDocument(string COM)
+        {
+
+        }
+
+        public virtual void SendDocument(string COM)
+        {
+
+        }
     }
 }

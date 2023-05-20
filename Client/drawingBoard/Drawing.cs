@@ -10,8 +10,8 @@ namespace drawingBoard
 {
     internal class Drawing
     {
-        const int width = 128;
-        const int height = 64;
+        private const int width = 128;
+        private const int height = 64;
         public int Width { get { return width; } }
         public int Height { get { return height; } }
 

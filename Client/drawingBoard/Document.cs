@@ -44,24 +44,12 @@ namespace drawingBoard
                 view.Update();
         }
 
-        public virtual void LoadDocument(string filePath)
-        {
+        public virtual void LoadDocument(string filePath) { }
 
-        }
+        public virtual void SaveDocument(string filePath) { }
 
-        public virtual void SaveDocument(string filePath)
-        {
+        public virtual void ReceiveDocument(string COM) { }
 
-        }
-
-        public virtual void ReceiveDocument(string COM)
-        {
-
-        }
-
-        public virtual void SendDocument(string COM)
-        {
-
-        }
+        public virtual void SendDocument(string COM) { }
     }
 }

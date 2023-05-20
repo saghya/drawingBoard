@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.IO.Ports;
 
 namespace drawingBoard
 {
@@ -49,14 +50,6 @@ namespace drawingBoard
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
-            while (String.IsNullOrWhiteSpace(form.DrawingName))
-            {
-                MessageBox.Show("Name cannot be empty");
-                form.DrawingName = "";
-                if (form.ShowDialog() != DialogResult.OK)
-                    return;
-            }
-
             DrawingDocument doc = new DrawingDocument(form.DrawingName);
             documents.Add(doc);
             createView(doc, true);
@@ -67,10 +60,9 @@ namespace drawingBoard
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "bin files (*.bin)|*.bin|All files (*.*)|*.*";
             openFileDialog.RestoreDirectory = true;
-            string path = "";
             if (openFileDialog.ShowDialog() != DialogResult.OK)
                 return;
-            path = openFileDialog.FileName;
+            string path = openFileDialog.FileName;
             DrawingDocument doc = new DrawingDocument(Path.GetFileName(path));
             documents.Add(doc);
             doc.LoadDocument(path);
@@ -98,36 +90,31 @@ namespace drawingBoard
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.RestoreDirectory = true;
             saveFileDialog.Filter = "bin files (*.bin)|*.bin|All files (*.*)|*.*";
-            string path = "";
+            saveFileDialog.FileName = ActiveDocument.Name;
             if (saveFileDialog.ShowDialog() != DialogResult.OK)
                 return;
-            path = saveFileDialog.FileName;
-            ActiveDocument.SaveDocument(path);
+            ActiveDocument.SaveDocument(saveFileDialog.FileName);
         }
-        
+
         public void SendActiveDocument()
         {
-            if (ActiveDocument == null)
+            SerialConnectForm serialConnectForm = new SerialConnectForm();
+            if (ActiveDocument == null || serialConnectForm.ShowDialog() != DialogResult.OK)
                 return;
-            ActiveDocument.SendDocument("COM3");
+            ActiveDocument.SendDocument(serialConnectForm.SelectedPort());
         }
 
         public void ReceiveDocument()
         {
+            SerialConnectForm serialConnectForm = new SerialConnectForm();
             NewDocForm form = new NewDocForm();
-            if (form.ShowDialog() != DialogResult.OK)
+
+            if (serialConnectForm.ShowDialog() != DialogResult.OK ||
+                form.ShowDialog() != DialogResult.OK)
                 return;
 
-            while (String.IsNullOrWhiteSpace(form.DrawingName))
-            {
-                MessageBox.Show("Name cannot be empty");
-                form.DrawingName = "";
-                if (form.ShowDialog() != DialogResult.OK)
-                    return;
-            }
-
             DrawingDocument doc = new DrawingDocument(form.DrawingName);
-            doc.ReceiveDocument("COM3");
+            doc.ReceiveDocument(serialConnectForm.SelectedPort());
             documents.Add(doc);
             createView(doc, true);
         }

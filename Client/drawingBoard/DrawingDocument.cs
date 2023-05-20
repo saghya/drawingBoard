@@ -98,6 +98,11 @@ namespace drawingBoard
 
             serialPort.Open();
             serialPort.Write("@SAVE");
+            if (serialPort.ReadChar() != 'O' || serialPort.ReadChar() != 'K')
+            {
+                serialPort.Close();
+                return;
+            }
 
             for (int y = 0; y < Drawing.Height / 8; y++)
             {

@@ -1,8 +1,14 @@
-#include "callbacks.h"
+#include "drawing.h"
 #include "main.h"
 #include "stm32f446xx.h"
 #include "stm32f4xx_hal.h"
 #include <string.h>
+#include "state.h"
+#include "menu.h"
+
+#define DEBOUNCE_MILLIS 10
+
+extern UART_HandleTypeDef huart2;
 
 uint32_t previousMillis = 0;
 uint32_t currentMillis  = 0;
@@ -10,7 +16,7 @@ uint32_t currentMillis  = 0;
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     currentMillis = HAL_GetTick();
-    if (currentMillis - previousMillis < 10) {
+    if (currentMillis - previousMillis < DEBOUNCE_MILLIS) {
         return;
     }
     previousMillis = currentMillis;
@@ -85,13 +91,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     if (i == RX_BUFF_SIZE) {
         i = command = 0;
         if (!strncmp((char *)Rx_buff, "SAVE", RX_BUFF_SIZE)) {
-            HAL_UART_Transmit(huart, (uint8_t *)"OK", 2, -1);
-            HAL_UART_Transmit(huart, (uint8_t *)LCD_bitmap, 8 * LCD_WIDTH, -1);
+            sendDrawing();
         } else if (!strncmp((char *)Rx_buff, "LOAD", RX_BUFF_SIZE)) {
-            HAL_UART_Transmit(huart, (uint8_t *)"OK", 2, -1);
-            HAL_UART_Receive(huart, (uint8_t *)LCD_bitmap, 8 * LCD_WIDTH, -1);
-            LCD_DrawBitmap();
-            state = S_DRAWING;
+            receiveDrawing();
         }
     }
 

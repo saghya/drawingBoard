@@ -21,7 +21,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "state.h"
+#include "menu.h"
 #include "drawing.h"
+#include "brightness.h"
+#include "flash.h"
 #include "stm32f446xx.h"
 /* USER CODE END Includes */
 
@@ -62,11 +66,17 @@ static void MX_TIM8_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
-
+void delay_us(uint16_t us);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void delay_us(uint16_t us)
+{
+    __HAL_TIM_SET_COUNTER(&htim1, 0); // set the counter value a 0
+    while (__HAL_TIM_GET_COUNTER(&htim1) < us)
+        ; // wait for the counter to reach the us input in the parameter
+}
 /* USER CODE END 0 */
 
 /**
@@ -106,13 +116,28 @@ int main(void)
     MX_ADC2_Init();
     MX_TIM1_Init();
     /* USER CODE BEGIN 2 */
-    mainLoopInit();
+    HAL_TIM_Base_Start(&htim1);
+    HAL_UART_Receive_IT(&huart2, &Rx_byte, 1);
+    LCD_Init();
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1) {
-        mainLoop();
+        switch (state) {
+            case S_MENU:
+                menuLoop();
+                break;
+            case S_DRAWING:
+                drawingLoop();
+                break;
+            case S_SAVE:
+                saveDrawing();
+                break;
+            case S_CHANGE_BRIGHTNESS:
+                brightnessLoop();
+                break;
+        }
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */

@@ -19,6 +19,7 @@
 #define LCD_BRIGHTNESS_FLASH_ADDR 0x0800C000
 
 extern TIM_HandleTypeDef htim8; // timer used for brightness
+extern uint8_t           LCD_bitmap[8][LCD_WIDTH];
 
 void LCD_Init();
 void LCD_Clear();
@@ -26,12 +27,12 @@ void LCD_ClearBitmap();
 void LCD_DrawBitmap();
 void LCD_SetBrightness(uint16_t b);
 void LCD_SetPos(uint8_t x, uint8_t y);
-void LCD_SetPixel(uint8_t x, uint8_t y);
-void LCD_ResetPixel(uint8_t x, uint8_t y);
-void LCD_TogglePixel(uint8_t x, uint8_t y);
+void LCD_SetPixel(uint8_t value, uint8_t x, uint8_t y);
+void LCD_SavePixel(uint8_t value, uint8_t x, uint8_t y);
 void LCD_DrawChar(char c, uint8_t x, uint8_t p);
 void LCD_DrawString(char *s, uint8_t x, uint8_t p);
 void LCD_DrawCharInverse(char c, uint8_t x, uint8_t p);
 void LCD_DrawStringInverse(char *s, uint8_t x, uint8_t y);
 
 #endif // __RG12864B_H
+

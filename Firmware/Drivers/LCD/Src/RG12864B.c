@@ -102,26 +102,22 @@ void LCD_SetPos(uint8_t x, uint8_t p)
     LCD_Instruction(X_BASE | x);
 }
 
-void LCD_SetPixel(uint8_t x, uint8_t y)
+void LCD_SetPixel(uint8_t value, uint8_t x, uint8_t y)
 {
-    LCD_bitmap[y / 8][x] |= 1 << y % 8;
     LCD_SetPos(x, y / 8);
-    LCD_Data(LCD_bitmap[y / 8][x]);
-}
-
-void LCD_ResetPixel(uint8_t x, uint8_t y)
-{
-    LCD_bitmap[y / 8][x] &= ~(1 << y % 8);
-    LCD_SetPos(x, y / 8);
-    LCD_Data(LCD_bitmap[y / 8][x]);
-}
-
-void LCD_TogglePixel(uint8_t x, uint8_t y)
-{
-    if (LCD_bitmap[y / 8][x] & 1 << y % 8) {
-        LCD_ResetPixel(x, y);
+    if (value) {
+        LCD_Data(LCD_bitmap[y / 8][x] | 1 << y % 8);
     } else {
-        LCD_SetPixel(x, y);
+        LCD_Data(LCD_bitmap[y / 8][x] & ~(1 << y));
+    }
+}
+
+void LCD_SavePixel(uint8_t value, uint8_t x, uint8_t y)
+{
+    if (value) {
+        LCD_bitmap[y / 8][x] |= 1 << y % 8;
+    } else {
+        LCD_bitmap[y / 8][x] &= ~(1 << y % 8);
     }
 }
 

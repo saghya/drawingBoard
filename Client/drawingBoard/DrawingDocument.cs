@@ -108,9 +108,9 @@ namespace drawingBoard
             {
                 for (int x = 0; x < Drawing.Width; x++)
                 {
-                    var wtf = new byte[1];
-                    serialPort.Read(wtf, 0, 1);
-                    d[x, y] = wtf[0];
+                    var b = new byte[1];
+                    serialPort.Read(b, 0, 1);
+                    d[x, y] = b[0];
                 }
             }
             createDrawingFromBitmap(d);
@@ -133,8 +133,8 @@ namespace drawingBoard
             {
                 for (int x = 0; x < Drawing.Width; x++)
                 {
-                    var wtf = new byte[] { d[x, y] };
-                    serialPort.Write(wtf, 0, 1);
+                    var b = new byte[] { d[x, y] };
+                    serialPort.Write(b, 0, 1);
                 }
             }
             serialPort.Close();

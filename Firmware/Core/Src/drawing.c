@@ -20,6 +20,7 @@ void drawingLoop()
         LCD_ClearBitmap();
     } else if (loadDrawing) {
         loadDrawing = 0;
+        penup       = 1;
         memcpy(LCD_bitmap, (void *)LCD_BITMAP_FLASH_ADDR, 8 * LCD_WIDTH);
     }
 

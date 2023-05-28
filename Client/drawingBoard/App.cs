@@ -64,9 +64,17 @@ namespace drawingBoard
                 return;
             string path = openFileDialog.FileName;
             DrawingDocument doc = new DrawingDocument(Path.GetFileName(path));
-            documents.Add(doc);
-            doc.LoadDocument(path);
-            createView(doc, true);
+
+            try
+            {
+                documents.Add(doc);
+                doc.LoadDocument(path);
+                createView(doc, true);
+            }
+            catch
+            {
+                MessageBox.Show("Error opening drawing.", "Document", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public void CloseActiveView()
@@ -77,7 +85,14 @@ namespace drawingBoard
             Document docToClose = ActiveDocument;
 
             docToClose.DetachView(activeView);
-            mainForm.TabControl.TabPages.Remove(getTabPageForView(activeView));
+            try
+            {
+                mainForm.TabControl.TabPages.Remove(getTabPageForView(activeView));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
             if (!docToClose.HasAnyView())
                 documents.Remove(docToClose);
         }
@@ -93,15 +108,36 @@ namespace drawingBoard
             saveFileDialog.FileName = ActiveDocument.Name;
             if (saveFileDialog.ShowDialog() != DialogResult.OK)
                 return;
-            ActiveDocument.SaveDocument(saveFileDialog.FileName);
+
+            try
+            {
+                ActiveDocument.SaveDocument(saveFileDialog.FileName);
+            }
+            catch
+            {
+                MessageBox.Show("Error saving drawing.", "Document", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public void SendActiveDocument()
         {
             SerialConnectForm serialConnectForm = new SerialConnectForm();
-            if (ActiveDocument == null || serialConnectForm.ShowDialog() != DialogResult.OK)
+            if (ActiveDocument == null)
+            {
+                MessageBox.Show("Open or create a drawing before sending.", "Document", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
-            ActiveDocument.SendDocument(serialConnectForm.SelectedPort());
+            }
+            else if (serialConnectForm.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                ActiveDocument.SendDocument(serialConnectForm.SelectedPort());
+            }
+            catch
+            {
+                MessageBox.Show("Connection lost.", "Serial", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public void ReceiveDocument()
@@ -113,10 +149,17 @@ namespace drawingBoard
                 form.ShowDialog() != DialogResult.OK)
                 return;
 
-            DrawingDocument doc = new DrawingDocument(form.DrawingName);
-            doc.ReceiveDocument(serialConnectForm.SelectedPort());
-            documents.Add(doc);
-            createView(doc, true);
+            try
+            {
+                DrawingDocument doc = new DrawingDocument(form.DrawingName);
+                doc.ReceiveDocument(serialConnectForm.SelectedPort());
+                documents.Add(doc);
+                createView(doc, true);
+            }
+            catch
+            {
+                MessageBox.Show("Connection lost.", "Serial", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public void UpdateActiveView()

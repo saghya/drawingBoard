@@ -94,50 +94,53 @@ namespace drawingBoard
         public override void ReceiveDocument(string COM)
         {
             byte[,] d = new byte[Drawing.Width, Drawing.Height / 8];
-            SerialPort serialPort = new SerialPort(COM, 115200);
-
-            serialPort.Open();
-            serialPort.Write("@SAVE");
-            if (serialPort.ReadChar() != 'O' || serialPort.ReadChar() != 'K')
+            using (SerialPort serialPort = new SerialPort(COM, 115200))
             {
-                serialPort.Close();
-                return;
-            }
-
-            for (int y = 0; y < Drawing.Height / 8; y++)
-            {
-                for (int x = 0; x < Drawing.Width; x++)
+                serialPort.Open();
+                serialPort.Write("@SAVE");
+                if (serialPort.ReadChar() != 'O' || serialPort.ReadChar() != 'K')
                 {
-                    var b = new byte[1];
-                    serialPort.Read(b, 0, 1);
-                    d[x, y] = b[0];
+                    serialPort.Close();
+                    return;
+                }
+
+                for (int y = 0; y < Drawing.Height / 8; y++)
+                {
+                    for (int x = 0; x < Drawing.Width; x++)
+                    {
+                        var b = new byte[1];
+                        serialPort.Read(b, 0, 1);
+                        d[x, y] = b[0];
+                    }
                 }
             }
+
             createDrawingFromBitmap(d);
         }
 
         public override void SendDocument(string COM)
         {
             byte[,] d = createBitmapFromDrawing();
-            SerialPort serialPort = new SerialPort(COM, 115200);
-
-            serialPort.Open();
-            serialPort.Write("@LOAD");
-            if (serialPort.ReadChar() != 'O' || serialPort.ReadChar() != 'K')
+            using (SerialPort serialPort = new SerialPort(COM, 115200))
             {
-                serialPort.Close();
-                return;
-            }
-
-            for (int y = 0; y < Drawing.Height / 8; y++)
-            {
-                for (int x = 0; x < Drawing.Width; x++)
+                serialPort.Open();
+                serialPort.Write("@LOAD");
+                if (serialPort.ReadChar() != 'O' || serialPort.ReadChar() != 'K')
                 {
-                    var b = new byte[] { d[x, y] };
-                    serialPort.Write(b, 0, 1);
+                    serialPort.Close();
+                    return;
                 }
+
+                for (int y = 0; y < Drawing.Height / 8; y++)
+                {
+                    for (int x = 0; x < Drawing.Width; x++)
+                    {
+                        var b = new byte[] { d[x, y] };
+                        serialPort.Write(b, 0, 1);
+                    }
+                }
+                serialPort.Close();
             }
-            serialPort.Close();
         }
     }
 }

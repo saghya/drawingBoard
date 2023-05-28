@@ -97,6 +97,7 @@ namespace drawingBoard
             using (SerialPort serialPort = new SerialPort(COM, 115200))
             {
                 serialPort.Open();
+                serialPort.ReadTimeout = serialPort.WriteTimeout = 1000;
                 serialPort.Write("@SAVE");
                 if (serialPort.ReadChar() != 'O' || serialPort.ReadChar() != 'K')
                 {
@@ -124,6 +125,7 @@ namespace drawingBoard
             using (SerialPort serialPort = new SerialPort(COM, 115200))
             {
                 serialPort.Open();
+                serialPort.ReadTimeout = serialPort.WriteTimeout = 1000;
                 serialPort.Write("@LOAD");
                 if (serialPort.ReadChar() != 'O' || serialPort.ReadChar() != 'K')
                 {
